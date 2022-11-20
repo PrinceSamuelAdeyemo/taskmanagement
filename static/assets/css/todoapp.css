@@ -4,7 +4,7 @@
 
 .black-link{
     text-decoration: none;
-    font-weight: 450;
+    font-weight: 500;
     color: black;
 }
 
@@ -37,6 +37,10 @@
     color: gray;
 }
 
+.grey-text{
+    color: gray;
+    font-size: 0.7rem;
+}
 
 .little-dark-bold{
     font-weight: 600;
@@ -56,6 +60,7 @@
 }
 
 .for-allbg{
+    overflow-x: hidden;
     background-color: #192633;
 }
 
@@ -64,7 +69,27 @@
 }
 
 
+.user_navigation{
+    width: 20%;
+}
 
+
+/* Center styling */
+.center_view{
+    width: 58%;
+}
+
+.icon-turnsyellow{
+    color: rgb(248, 212, 9);
+    
+}
+
+
+
+
+.calendars_and_offers{
+    width: 22%;
+}
 
 
 
@@ -170,4 +195,26 @@ li:hover .turnsred{
     border-radius: 1rem;
     background-color: inherit;
     width: 10rem;
+}
+
+.profile-image{
+    width: 15%;
+    border-radius: 50%;
+}
+
+@media screen
+    and (min-width: 1px)
+    and (max-width: 720px){
+    .user_navigation{
+        width: 100%;
+    }
+    
+    /* Center styling */
+    .center_view{
+        width: 100%;
+    }
+    
+    .calendars_and_offers{
+        width: 100%;
+    }
 }
