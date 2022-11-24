@@ -1,3 +1,5 @@
+
+
 {% load static %}
 
 <!DOCTYPE>
@@ -11,36 +13,91 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
         <link rel="stylesheet" href="{% static 'assets/css/bootstrap/css/bootstrap.css' %}">
-        <link rel="stylesheet" href="{% static 'assets/css/todoapp.css' %}">
         <link rel="stylesheet" href="{% static 'assets/bootstrap-icons-1.3.0/bootstrap-icons.css' %}">
 
+        <link rel="stylesheet" href="{% static 'assets/css/todoapp.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/css/login.css' %}">
+        
         <script src="{% static 'assets/js/jquery.js'%} "></script>
-        <script src="{% static 'assets/js/plotly-2.16.1.min.js'%} "></script>
-        <script src="{% static 'assets/js/todoapp.js'%} "></script>
+        <script src="{% static 'assets/js/login.js'%} "></script>
+
+        
         
         <title></title>
     </head>
 
     <body>
         <div class="container-fluid">
-            <div>
-                <form action="" class="form" method="POST">
-                    {% csrf_token %}
-                    <div class="form-group row">
-                        <label for="username" class="form-label col-12">Username</label>
-                        <input id="username" name="username" type="text" class="form-control col-12">
-                    </div>
-                    <div class="form-group row">
-                        <label for="password" class="form-label">Password</label>
-                        <input id="password" name="password" type="password" class="form-control">
-                    </div>
+            <div class="all">
 
-                    <button type="submit">Submit</button>
+                <form id="getPersonalOrBusiness" action="" method="POST">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-6">
+                            <button name="personallogintrigger" type="button" class="btn float-end" id="personallogintrigger">Personal</button>
+                        </div>
+                        
+                        <div class="col-6">
+                            <button name="businesslogintrigger" type="button" class="btn" id="businesslogintrigger">Company</button>
+                        </div>
+                    </div>
                 </form>
+
+                
+                    
+
+                <form action="" id="personalLoginForm" class="form" method="POST">
+                    {% csrf_token %}
+                    <div>
+                        {% for message in messages %}
+                        <h1>{{message}}</h1>
+                        {% endfor %}
+                    </div>
+                    <div class="personallogin" id="personallogin">
+                        <div class="form-group row">
+                            <label for="email" class="form-label col-12">Email Address</label>
+                            <input id="email" name="email" type="email" class="form-control col-12" placeholder="e.g personal@gmail.com">
+                        </div>
+                        <div class="form-group row">
+                            <label for="password" class="form-label">Password</label>
+                            <input id="password" name="password" type="password" class="form-control">
+                        </div>
+    
+                        <button type="submit" name="personalSignin" id="personalSignin" class="btn btn-primary">Sign in</button>
+    
+                        <div class="form-group text-center mt-2">
+                            <p class="form-control-plaintext">Haven't Registered? <span><a class="signup-link" href="/signup">Sign Up</a></span></p>
+                        </div>
+                    </div>
+                </form>
+                
+                <!-- For business login -->
+                <form action="" id="businessLoginForm" class="form" method="POST">   
+                    {% csrf_token %} 
+                    <div class="businesslogin" id="businesslogin">
+                        <div class="form-group row">
+                            <label for="businessemail" class="form-label col-12">Email Address</label>
+                            <input id="businessemail" name="businessemail" type="email" class="form-control col-12" placeholder="e.g company@company.com">
+                        </div>
+                        <div class="form-group row">
+                            <label for="businesspassword" class="form-label">Password</label>
+                            <input id="businesspassword" name="businesspassword" type="password" class="form-control">
+                        </div>
+    
+                        <button type="submit" name="businessSignin" id="businessSignin" class="btn btn-primary">Sign in</button>
+    
+                        <div class="form-group text-center mt-2">
+                            <p class="form-control-plaintext">Haven't Registered? <span><a class="signup-link" href="/signup">Sign Up</a></span></p>
+                        </div>
+                    </div>
+                </form>
+                    
+                    
+                    <br>
                 
             </div>
         </div>
     </body>
 
-
+    
 </html>
