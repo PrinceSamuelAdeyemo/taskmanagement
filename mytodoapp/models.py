@@ -5,18 +5,21 @@ from django.contrib.auth.models import User
 
 # Model for a personal profile
 class Profile(models.Model):
-    personal = models.ForeignKey(User, on_delete = models.CASCADE)
+    personal_basicdetails = models.ForeignKey(User, on_delete = models.CASCADE)
     
     def __str__(self):
-        return self.personal.username
+        return self.personal_basicdetails.username
+    
+    
 
 
 # Model for a enterprise profile
 class BusinessProfile(models.Model):
-    business_name = models.ForeignKey(User, on_delete= models.CASCADE)
+    business_basicdetails = models.ForeignKey(User, on_delete= models.CASCADE)
     
     def __str__(self):
-        return self.business_name.username
+        return self.business_basicdetails.username
+    
     
 
 class Task(models.Model):
