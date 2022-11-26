@@ -11,13 +11,19 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
         <link rel="stylesheet" href="{% static 'assets/css/bootstrap/css/bootstrap.css' %}">
-        <link rel="stylesheet" href="{% static 'assets/css/todoapp.css' %}">
         <link rel="stylesheet" href="{% static 'assets/bootstrap-icons-1.3.0/bootstrap-icons.css' %}">
 
+        <link rel="stylesheet" href="{% static 'assets/css/todoapp.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/css/activity.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/css/create-task.css' %}">
+
+        <!--
         <script src="{% static 'assets/js/jquery.js'%} "></script>
         <script src="{% static 'assets/js/plotly-2.16.1.min.js'%} "></script>
         <script src="{% static 'assets/js/todoapp.js'%} "></script>
-        
+        <script src="{% static 'assets/js/activity.js'%} "></script>
+        <script src="{% static 'assets/js/create-task.js'%} "></script>
+        -->
         <title></title>
     </head>
 
@@ -33,7 +39,7 @@
                         <ul class="nav nav-pills flex-column navigating-bars h-100">
                             <li class="nav-item w-100 mt-4"><a href="/" class="btn nav-link text-start grey-link w-100 turnsyellow"><i class="bi bi-house me-4"></i><span class=" turnsviolet">Dashboard<span></a></li>
                             <li class="nav-item w-100 mt-4"><a href="/calendar" class="btn nav-link text-start grey-link w-100 turnsyellow"><i class="bi bi-calendar3 me-4"></i><span class=" turnsviolet">Calendar</span></a></li>
-                            <li class="nav-item w-100 mt-4"><a href="" class="btn nav-link text-start grey-link w-100 turnsyellow"><i class="bi bi-book me-4"></i><span class=" turnsviolet">Activity</span></a></li>
+                            <li class="nav-item w-100 mt-4"><a href="" type="button" class="btn nav-link text-start grey-link w-100 turnsyellow" id="activitypagebutton"><i class="bi bi-book me-4"></i><span class=" turnsviolet">Activity</span></a></li>
                             <li class="nav-item w-100 mt-4"><a href="" class="btn nav-link text-start grey-link w-100 turnsyellow"><i class="bi bi-chat me-4"></i><span class=" turnsviolet">Messages</span></a></li>
                             <li class="nav-item w-100 mt-4"><a href="" class="btn nav-link text-start grey-link w-100 turnsyellow"><i class="bi bi-list-task me-4"></i><span class=" turnsviolet">Project Plan</span></a></li>
                             <li class="nav-item w-100 mt-4"><a href="/settings" class="btn nav-link text-start grey-link w-100 turnsyellow"><i class="bi bi-gear me-4"></i><span class=" turnsviolet">Settings</span></a></li>
@@ -56,7 +62,7 @@
                             <div class="uppernavs col-6 w-50">
                                 
                                 <div class="uppernav w-75 px-4">
-                                    <button class="btn btn-warning create-new-task little-dark-bold">+ New task</button>
+                                    <button class="btn btn-warning create-new-task little-dark-bold" id="create-task">+ New task</button>
                                     <button class="notifications"><i class="bi bi-bell"></i></button>
                                     
                                     <img class="profile-image" src="{% static 'assets/the houses/AvatarMaker_1.png' %}" alt="">
@@ -191,6 +197,34 @@
                     </div>
                 </div>
             </div>
+
+
+            <div class="activity-panel" id="task-panel">
+                <div class="activity-panelsubdiv">
+                    <button type="button" class="btn cancelactivitypage" id="cancelactivitypage"><span><i class="bi bi-x fs-1 text-white bg-dark"></i></span></button>
+                    <div class="foractivityabsolute">
+                        <div class="activity-panel-output">
+                            sdddddddddddddddddddddd <br>njjjjjjjjjjjj
+                            <h1 class="text-warning">ccccccccccc</h1>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+
+
+            <div class="task-panel" id="task-panel">
+                <div class="task-panelsubdiv">
+                    <button type="button" class="btn canceltaskpage" id="canceltaskpage"><span><i class="bi bi-x fs-1 text-white bg-dark"></i></span></button>
+                    <div class="fortaskabsolute">
+                        <div class="task-panel-output">
+                            sdddddddddddddddddddddd <br>njjjjjjjjjjjj
+                            <h1 class="text-warning">ccccccccccc</h1>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
         <!--
             <div class="app_header">
                 <h1>My todo app</h1>
@@ -226,6 +260,8 @@
     <script src="{% static 'assets/js/jquery.js'%} "></script>
     <script src="{% static 'assets/js/plotly-2.16.1.min.js'%} "></script>
     <script src="{% static 'assets/js/todoapp.js'%} "></script>
+    <script src="{% static 'assets/js/activity.js'%} "></script>
+    <script src="{% static 'assets/js/create-task.js'%} "></script>
 
     
 
