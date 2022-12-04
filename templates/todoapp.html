@@ -15,15 +15,9 @@
 
         <link rel="stylesheet" href="{% static 'assets/css/todoapp.css' %}">
         <link rel="stylesheet" href="{% static 'assets/css/activity.css' %}">
-        <link rel="stylesheet" href="{% static 'assets/css/create-task.css' %}">
-
-        <!--
-        <script src="{% static 'assets/js/jquery.js'%} "></script>
-        <script src="{% static 'assets/js/plotly-2.16.1.min.js'%} "></script>
-        <script src="{% static 'assets/js/todoapp.js'%} "></script>
-        <script src="{% static 'assets/js/activity.js'%} "></script>
-        <script src="{% static 'assets/js/create-task.js'%} "></script>
-        -->
+        <link rel="stylesheet" href="{% static 'assets/css/create-task.css' %}">        
+        
+        
         <title></title>
     </head>
 
@@ -39,7 +33,7 @@
                         <ul class="nav nav-pills flex-column navigating-bars h-100">
                             <li class="nav-item w-100 mt-4"><a href="/" class="btn nav-link text-start grey-link w-100 turnsyellow"><i class="bi bi-house me-4"></i><span class=" turnsviolet">Dashboard<span></a></li>
                             <li class="nav-item w-100 mt-4"><a href="/calendar" class="btn nav-link text-start grey-link w-100 turnsyellow"><i class="bi bi-calendar3 me-4"></i><span class=" turnsviolet">Calendar</span></a></li>
-                            <li class="nav-item w-100 mt-4"><a href="" type="button" class="btn nav-link text-start grey-link w-100 turnsyellow" id="activitypagebutton"><i class="bi bi-book me-4"></i><span class=" turnsviolet">Activity</span></a></li>
+                            <li class="nav-item w-100 mt-4"><a type="button" class="btn nav-link text-start grey-link w-100 turnsyellow" id="activitypagebutton"><i class="bi bi-book me-4"></i><span class=" turnsviolet">Activity</span></a></li>
                             <li class="nav-item w-100 mt-4"><a href="" class="btn nav-link text-start grey-link w-100 turnsyellow"><i class="bi bi-chat me-4"></i><span class=" turnsviolet">Messages</span></a></li>
                             <li class="nav-item w-100 mt-4"><a href="" class="btn nav-link text-start grey-link w-100 turnsyellow"><i class="bi bi-list-task me-4"></i><span class=" turnsviolet">Project Plan</span></a></li>
                             <li class="nav-item w-100 mt-4"><a href="/settings" class="btn nav-link text-start grey-link w-100 turnsyellow"><i class="bi bi-gear me-4"></i><span class=" turnsviolet">Settings</span></a></li>
@@ -199,13 +193,13 @@
             </div>
 
 
-            <div class="activity-panel" id="task-panel">
+            <div class="activity-panel" id="activity-panel">
                 <div class="activity-panelsubdiv">
                     <button type="button" class="btn cancelactivitypage" id="cancelactivitypage"><span><i class="bi bi-x fs-1 text-white bg-dark"></i></span></button>
                     <div class="foractivityabsolute">
                         <div class="activity-panel-output">
                             sdddddddddddddddddddddd <br>njjjjjjjjjjjj
-                            <h1 class="text-warning">ccccccccccc</h1>
+                            <h1 class="text-warning">Activity panel</h1>
                         </div>
                     </div>
                     
@@ -215,12 +209,117 @@
 
             <div class="task-panel" id="task-panel">
                 <div class="task-panelsubdiv">
-                    <button type="button" class="btn canceltaskpage" id="canceltaskpage"><span><i class="bi bi-x fs-1 text-white bg-dark"></i></span></button>
+                    <button type="button" class="btn canceltaskpage p-0 m-0" id="canceltaskpage"><span><i class="bi bi-x fs-1 text-white bg-dark"></i></span></button>
                     <div class="fortaskabsolute">
-                        <div class="task-panel-output">
-                            sdddddddddddddddddddddd <br>njjjjjjjjjjjj
-                            <h1 class="text-warning">ccccccccccc</h1>
+
+                        <div class="aa">
+                            {% if user.is_authenticated %}
+                            <form class="form-panel-output" id="form-panel-output" method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="task-panel-output">
+
+                                    <div class="row m-3">
+                                        <div class="col col-md-7">
+                                            <p class="d-inline">Create a task</p>
+                                        </div>
+    
+                                        <div class=" col col-md-5 d-inline">
+                                            <label for="#sharetaskprivacy">Public</label>
+                                            
+                                            <div class="form-check form-switch d-inline">
+                                                <input type="checkbox" class="form-check-input custom-switch ccc" id="sharetaskprivacy" role="switch">
+                                            </div>
+                                            <div class="d-inline">
+                                                <button class="btn"><span><i class="bi bi-link"></i></span></button>
+                                                <button class="btn"><span><i class="bi bi-upc-scan"></i></span></button>
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+        
+                                    <div class="main-supercreate col-12 bg-green w-100">
+
+                                        <div class="main-create">
+                                            <h2 class="task_name_input"><input type="text" name="task_name" id="task_name" placeholder="Task Name" class="task_name_input w-100" autofocus></h2>
+                                            <div class="describeOrPreview">
+                                                <button class="btn p-1">Description</button>
+                                                <button class="btn p-1">Preview</button>
+                                            </div>
+                                            <div class="bg-white ee">
+                                                <textarea class="dd w-100" name="task_description" id="task_description" value="" placeholder="Enter Description"></textarea>
+                                                <div class="bg-white">
+                                                    <button class="btn"><span><i class="bi bi-link"></i></span></button>
+                                                    <button class="btn"><span><i class="bi bi-image"></i></span></button>
+                                                    <button class="btn"><span><i class="bi bi-emoji-smile"></i></span></button>
+                                                    <p class="d-inline float-end">Text Formatting</p>
+                                                </div>
+                                            </div>
+                                            <div class="form mt-5">
+                                                <p>SUB-TASKS</p>
+                                                <div class="m-0">
+                                                    <div class="subtaskcontainer m-1 bg-info" id="subtaskcontainer">
+                                                        <span><i class="bi bi-list-task"></i></span>
+                                                        <input type="checkbox" id="subtask">
+                                                        <label for="#subtask">Sub Task 1</label>
+                                                    </div>
+                                                    
+                                                </div>
+                                                <div class="m-0">
+                                                    <p><input type="text" id="subtaskinput" class="form-control"></p>
+                                                    <button type="button" name="discardsubtask" class="btn p-0">Discard</button>
+                                                    <button type="submit" name="savesubtask" id="savesubtask" class="btn text-success p-0">Save subtask</button>
+                                                </div>
+                                            </div>
+    
+                                            <div>
+                                                <button class="btn bg-white px-2 py-1"><span><i class="bi bi-alarm m-1"></i></span>Attachment</button>
+                                                <button class="btn bg-white px-2 py-1"><span><i class="bi bi-alarm m-1"></i></span>Relationship</button>
+                                                <button class="btn bg-white px-2 py-1"><span><i class="bi bi-alarm m-1"></i></span>Alert</button>
+                                                <button class="btn bg-white px-2 py-1"><span><i class="bi bi-three-dots m-2"></i></span>More</button>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                    
+                                </div>
+    
+                                <div class="project-status">
+                                    <div>
+                                        <button class="btn w-100 text-start">Select a project</button>
+                                    </div>
+                                    <div>
+                                        <p>ATTRIBUTES</p>
+                                    </div>
+                                    <div>
+                                        <table class="taskTags">
+                                            <tr>
+                                                <td>Status</td>
+                                                <td><button class="btn btn-warning">In progress</button></td>
+                                            <tr>
+                                                <td>Priority</td>
+                                                <td><button class="btn btn-danger">High</button></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Assignee</td>
+                                                <td><button class="btn bg-white">Samuel Adeyemo</button></td>
+                                            </tr>
+                                                <td>Due Date</td>
+                                                <td><button class="btn">27/11/2022</button></td>
+                                            </tr>
+                                        </table>
+                                        <button class="btn">+ Add Attribute</button>
+                                    </div>
+    
+                                    <div class="cancelOrCreated w-100">
+                                        <button type="reset" class="bg-danger">Cancel</button>
+                                        <button type="submit" name="createtask" id="createtask" class="bg-success">+ Create</button>
+                                    </div>
+                                </div>
+                            </form>
+                            {% endif %}
                         </div>
+                        
+                    
                     </div>
                     
                 </div>
@@ -255,14 +354,14 @@
             </div>
         -->
         </div>
-
+    
     </body>
     <script src="{% static 'assets/js/jquery.js'%} "></script>
     <script src="{% static 'assets/js/plotly-2.16.1.min.js'%} "></script>
     <script src="{% static 'assets/js/todoapp.js'%} "></script>
     <script src="{% static 'assets/js/activity.js'%} "></script>
-    <script src="{% static 'assets/js/create-task.js'%} "></script>
+    <script src="{% static 'assets/js/create-task.js'%} "></script> 
 
-    
+
 
 </html>
