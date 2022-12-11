@@ -1,5 +1,6 @@
 {% load static %}
 
+
 <!DOCTYPE>
 <html>
     <head>
@@ -56,8 +57,8 @@
                             <div class="uppernavs col-6 w-50">
                                 
                                 <div class="uppernav w-75 px-4">
-                                    <button class="btn btn-warning create-new-task little-dark-bold" id="create-task">+ New task</button>
-                                    <button class="notifications"><i class="bi bi-bell"></i></button>
+                                    <button type="button" class="btn btn-warning create-new-task little-dark-bold" id="create-task">+ New task</button>
+                                    <button type="button" class="notifications"><i class="bi bi-bell"></i></button>
                                     
                                     <img class="profile-image" src="{% static 'assets/the houses/AvatarMaker_1.png' %}" alt="">
                                 </div>
@@ -69,14 +70,14 @@
                             <div class="col-6 p-3">
                                 <div class="upper-dark for-round-border row p-3 me-1">
                                     <div class="float-left col-2">
-                                        <button class="btn fs-4"><i class="bi bi-calendar-fill icon-turnsyellow"></i></button>
+                                        <button type="button" class="btn fs-4"><i class="bi bi-calendar-fill icon-turnsyellow"></i></button>
                                     </div>
                                     <div class="col-6">
-                                        <p class="little-white-bold d-inline">12 Tasks</p>
+                                        <p class="little-white-bold d-inline" id="taskCompleted">Task</p>
                                         <p class="grey-text">Completed</p>
                                     </div>
                                     <div class="col-4">
-                                        Pie chart
+                                        <p class="fw-bold">Pie chart</p>
                                     </div>
                                 </div>
                                 
@@ -84,14 +85,19 @@
                             <div class="col-6 p-3">
                                 <div class="upper-dark for-round-border row p-3 ms-1">
                                     <div class="float-end col-2">
-                                        <button class="btn fs-4"><i class="bi bi-calendar-fill icon-turnsyellow"></i></button>
+                                        <button type="button" class="btn fs-4"><i class="bi bi-calendar-fill icon-turnsyellow"></i></button>
                                     </div>
                                     <div class="col-6">
-                                        <p class="little-white-bold d-inline">4 Tasks</p>
+                                        
+                                        
+                                        <p class="little-white-bold d-inline" id="taskInProgress">Task</p>
+                                        
                                         <p class="grey-text">In Progress</p>
+                                        
+                                        
                                     </div>
                                     <div class="col-4">
-                                        Pie chart
+                                        <p class="fw-bold">Pie chart</p>
                                     </div>
                                 </div>
                                 
@@ -101,7 +107,7 @@
                         <div class="overview mt-3">
                             <div class="overview-tab upper-dark for-round-border p-4">
                                 <p class="text-start little-white-bold d-inline">Overview</p>
-                                <button class="btn little-white-bold" style="float:right"><i class="bi bi-three-dots"></i></button>
+                                <button type="button" class="btn little-white-bold" style="float:right"><i class="bi bi-three-dots"></i></button>
                                 <div class="mt-3" id="tester">
 
                                 </div>
@@ -114,7 +120,7 @@
                         <div class="today-task mt-3">
                             <div class="overview-tab upper-dark for-round-border p-4">
                                 <p class="text-start little-white-bold d-inline">Today's Task</p>
-                                <button class="btn little-white-bold pt-0" style="float:right">...</button>
+                                <button type="button" class="btn little-white-bold pt-0" style="float:right">...</button>
                                 <div style="float: clear">
                                     
                                 </div>
@@ -180,7 +186,7 @@
 
                                             <div class="center-upgrade-elements align-items-center justify-items-center text-center">
                                                 <p class="text-white">Get more features with Pro</p>
-                                                <button class="btn fw-bold bg-light w-100 mb-3">Upgrade plan</button>
+                                                <button type="button" class="btn fw-bold bg-light w-100 mb-3">Upgrade plan</button>
                                             </div>
                                             
                                         </div>
@@ -197,9 +203,59 @@
                 <div class="activity-panelsubdiv">
                     <button type="button" class="btn cancelactivitypage" id="cancelactivitypage"><span><i class="bi bi-x fs-1 text-white bg-dark"></i></span></button>
                     <div class="foractivityabsolute">
-                        <div class="activity-panel-output">
-                            sdddddddddddddddddddddd <br>njjjjjjjjjjjj
-                            <h1 class="text-warning">Activity panel</h1>
+                        
+                        <div class="activity-panel-output p-3">
+                            
+                            <div class="row w-100 bg-danger">
+                                
+                                <div class="my-3 col-4 bg-success">
+                                    {% for activity in activities %}
+                                    {% if activity.task_done == False and activity.in_progress == False %}
+
+                                    <div class="m-1 bg-white">
+                                        <p class="m-3"><h3>Task Owner:</h3> {{ activity.task_owner }} </p>
+                                        <p class="m-3"><h3>Task Name:</h3> {{ activity }} </p>
+                                        <p class="m-3"><h3>Task Description:</h3> {{ activity.task_description }} </p>
+                                    </div>
+                                    
+
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                                
+                                
+                                <div class="my-3 col-4 bg-warning">
+                                    {% for activity in activities %}
+                                    {% if activity.task_done == False and activity.in_progress == True %}
+
+                                    <div class="m-1 bg-white">
+                                        <p class="m-3"><h3>Task Owner:</h3> {{ activity.task_owner }} </p>
+                                        <p class="m-3"><h3>Task Name:</h3> {{ activity }} </p>
+                                        <p class="m-3"><h3>Task Description:</h3> {{ activity.task_description }} </p>
+                                    </div>
+
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                                
+
+                                
+                                <div class="my-3 col-4 bg-info">
+                                    {% for activity in activities %}
+                                    {% if activity.task_done == True %}
+
+                                    <div class="m-1 bg-white">
+                                        <p class="m-3"><h3>Task Owner:</h3> {{ activity.task_owner }} </p>
+                                        <p class="m-3"><h3>Task Name:</h3> {{ activity }} </p>
+                                        <p class="m-3"><h3>Task Description:</h3> {{ activity.task_description }} </p>
+                                    </div>
+                                    
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                                
+                            </div>
+                            
                         </div>
                     </div>
                     
@@ -209,10 +265,10 @@
 
             <div class="task-panel" id="task-panel">
                 <div class="task-panelsubdiv">
-                    <button type="button" class="btn canceltaskpage p-0 m-0" id="canceltaskpage"><span><i class="bi bi-x fs-1 text-white bg-dark"></i></span></button>
+                    <button type="button" class="btn canceltaskpage" id="canceltaskpage"><span><i class="bi bi-x fs-1 text-white bg-dark"></i></span></button>
                     <div class="fortaskabsolute">
 
-                        <div class="aa">
+                        <div class="divfor-form">
                             {% if user.is_authenticated %}
                             <form class="form-panel-output" id="form-panel-output" method="POST" enctype="multipart/form-data">
                                 {% csrf_token %}
@@ -220,7 +276,7 @@
 
                                     <div class="row m-3">
                                         <div class="col col-md-7">
-                                            <p class="d-inline">Create a task</p>
+                                            <p class="d-inline">Project/Create a task</p>
                                         </div>
     
                                         <div class=" col col-md-5 d-inline">
@@ -230,8 +286,8 @@
                                                 <input type="checkbox" class="form-check-input custom-switch ccc" id="sharetaskprivacy" role="switch">
                                             </div>
                                             <div class="d-inline">
-                                                <button class="btn"><span><i class="bi bi-link"></i></span></button>
-                                                <button class="btn"><span><i class="bi bi-upc-scan"></i></span></button>
+                                                <button type="button" class="btn"><span><i class="bi bi-link"></i></span></button>
+                                                <button type="button" class="btn"><span><i class="bi bi-camera"></i></span></button>
                                                 
                                             </div>
                                         </div>
@@ -240,42 +296,63 @@
                                     <div class="main-supercreate col-12 bg-green w-100">
 
                                         <div class="main-create">
-                                            <h2 class="task_name_input"><input type="text" name="task_name" id="task_name" placeholder="Task Name" class="task_name_input w-100" autofocus></h2>
+                                            <h2 class="task_name_inputcon"><input type="text" name="task_name" id="task_name" placeholder="Task Name" class="task_name_input w-100" autofocus required></h2>
                                             <div class="describeOrPreview">
-                                                <button class="btn p-1">Description</button>
-                                                <button class="btn p-1">Preview</button>
+                                                <button type="button" class="btn p-1 btn-for-white fw-bold">Description</button>
+                                                <button type="button" class="btn p-1">Preview</button>
                                             </div>
                                             <div class="bg-white ee">
                                                 <textarea class="dd w-100" name="task_description" id="task_description" value="" placeholder="Enter Description"></textarea>
                                                 <div class="bg-white">
-                                                    <button class="btn"><span><i class="bi bi-link"></i></span></button>
-                                                    <button class="btn"><span><i class="bi bi-image"></i></span></button>
-                                                    <button class="btn"><span><i class="bi bi-emoji-smile"></i></span></button>
+                                                    
+                                                    <button type="button" class="btn d-inline float-start"><span><i class="bi bi-link"></i></span></button>
+                                                        <!--<button type="button" class="btn d-inline float-left"><span><i class="bi bi-image"></i></span></button>-->
+
+                                                    <div id="for-fileinput" class="">
+                                                        <input type="file" class="" id="main-fileinput" accept="image/*" multiple>
+                                                        <div id="for-fakefileinput" class="">
+                                                            <button type="button" class="btn"><span><i class="bi bi-image"></i></span></button>
+                                                        </div>
+                                                    </div>
+                                                    <div id="aaa" class="aaa">
+                                                        <button type="button" class="btn aaa"><span><i class="bi bi-emoji-smile"></i></span></button>
+                                                    </div>
+                                                    
+                                                    
                                                     <p class="d-inline float-end">Text Formatting</p>
+                                                    
+                                                    <div class="clear"></div>
                                                 </div>
                                             </div>
-                                            <div class="form mt-5">
+                                            <div class="mt-5">
                                                 <p>SUB-TASKS</p>
+                                                <p id="subtaskerror"></p>
                                                 <div class="m-0">
-                                                    <div class="subtaskcontainer m-1 bg-info" id="subtaskcontainer">
-                                                        <span><i class="bi bi-list-task"></i></span>
-                                                        <input type="checkbox" id="subtask">
-                                                        <label for="#subtask">Sub Task 1</label>
+                                                    <div class="subtaskcontainer m-1" id="subtaskcontainer">
+                                                        <ul class="subtaskitems" id="subtaskitems">
+                                                            <!--<li><span><i class="bi bi-list-task"></i></span><input class="mx-1" type="checkbox" id="subtask">Sub Task 1</li>-->
+                                                        </ul>
                                                     </div>
                                                     
                                                 </div>
                                                 <div class="m-0">
-                                                    <p><input type="text" id="subtaskinput" class="form-control"></p>
-                                                    <button type="button" name="discardsubtask" class="btn p-0">Discard</button>
-                                                    <button type="submit" name="savesubtask" id="savesubtask" class="btn text-success p-0">Save subtask</button>
+                                                    <p><input type="text" id="subtaskinput" class="form-control" placeholder="Subtasks here..."></p>
+                                                    <button type="button" name="discardsubtask" id="discardsubtask" class="btn p-0">Discard</button>
+                                                    <button type="button" name="savesubtask" id="savesubtask" class="btn text-success p-0">Save subtask</button>
                                                 </div>
                                             </div>
     
                                             <div>
-                                                <button class="btn bg-white px-2 py-1"><span><i class="bi bi-alarm m-1"></i></span>Attachment</button>
-                                                <button class="btn bg-white px-2 py-1"><span><i class="bi bi-alarm m-1"></i></span>Relationship</button>
-                                                <button class="btn bg-white px-2 py-1"><span><i class="bi bi-alarm m-1"></i></span>Alert</button>
-                                                <button class="btn bg-white px-2 py-1"><span><i class="bi bi-three-dots m-2"></i></span>More</button>
+                                                
+                                                <div id="for-fileinput" class="me-4">
+                                                    <input type="file" class="" id="main-fileinput" multiple>
+                                                    <div id="for-fakefileinput" class="">
+                                                        <button type="button" class="btn bg-white px-2 py-1"><span><i class="bi bi-alarm m-1"></i></span>Attachment</button>
+                                                    </div>
+                                                </div>
+                                                <button type="button" class="btn bg-white px-2 py-1"><span><i class="bi bi-alarm m-1"></i></span>Relationship</button>
+                                                <button type="button" class="btn bg-white px-2 py-1"><span><i class="bi bi-alarm m-1"></i></span>Alert</button>
+                                                <button type="button" class="btn bg-white px-2 py-1"><span><i class="bi bi-three-dots m-2"></i></span>More</button>
                                             </div>
                                         </div>
                                         
@@ -283,37 +360,41 @@
                                     
                                 </div>
     
-                                <div class="project-status">
-                                    <div>
-                                        <button class="btn w-100 text-start">Select a project</button>
+                                <div class="project-status p-3">
+                                    <div class="project-status_subdiv">
+                                        <div class="">
+                                            <button type="button" class="btn w-100 text-start project-selectionbtn"><span><i class="bi bi-menu-app me-3"></i></span><span class="me-5">Select a project</span><span><i class="bi bi-chevron-right ms-5"></i></span></button>
+                                            
+                                        </div>
+                                        <div class="mt-3">
+                                            <p>ATTRIBUTES</p>
+                                        </div>
+                                        <div>
+                                            <table class="taskTags">
+                                                <tr>
+                                                    <td>Status</td>
+                                                    <td><button type="button" class="btn btn-in-progress" ><span><i class="bi bi-stop-circle-fill me-2"></i></span>In progress</button></td>
+                                                <tr>
+                                                    <td>Priority</td>
+                                                    <td><button type="button" class="btn btn-highpriority" ><span><i class="bi bi-exclamation-circle me-2"></i></span>High</button></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Assignee</td>
+                                                    <td><button type="button" class="btn bg-white whitebtn-border" >Samuel Adeyemo</button></td>
+                                                </tr>
+                                                    <td>Due Date</td>
+                                                    <td><button type="button" class="btn whitebtn-border" >27/11/2022</button></td>
+                                                </tr>
+                                            </table>
+                                            <button type="button" class="btn">+ Add Attribute</button>
+                                        </div>
+        
+                                        <div class="cancelOrCreated w-100">
+                                            <button type="reset" class="bg-danger">Cancel</button>
+                                            <button type="submit" name="createtask" id="createtask" class="bg-success">+ Create</button>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <p>ATTRIBUTES</p>
-                                    </div>
-                                    <div>
-                                        <table class="taskTags">
-                                            <tr>
-                                                <td>Status</td>
-                                                <td><button class="btn btn-warning">In progress</button></td>
-                                            <tr>
-                                                <td>Priority</td>
-                                                <td><button class="btn btn-danger">High</button></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Assignee</td>
-                                                <td><button class="btn bg-white">Samuel Adeyemo</button></td>
-                                            </tr>
-                                                <td>Due Date</td>
-                                                <td><button class="btn">27/11/2022</button></td>
-                                            </tr>
-                                        </table>
-                                        <button class="btn">+ Add Attribute</button>
-                                    </div>
-    
-                                    <div class="cancelOrCreated w-100">
-                                        <button type="reset" class="bg-danger">Cancel</button>
-                                        <button type="submit" name="createtask" id="createtask" class="bg-success">+ Create</button>
-                                    </div>
+                                    
                                 </div>
                             </form>
                             {% endif %}
@@ -356,6 +437,9 @@
         </div>
     
     </body>
+    <script>
+        
+    </script>
     <script src="{% static 'assets/js/jquery.js'%} "></script>
     <script src="{% static 'assets/js/plotly-2.16.1.min.js'%} "></script>
     <script src="{% static 'assets/js/todoapp.js'%} "></script>

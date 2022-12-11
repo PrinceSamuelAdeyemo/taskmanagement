@@ -11,9 +11,10 @@ jQuery(function($){
     });
 
     // Open the create-activity window
-    $('#create-activity').on('click', function(){
+    $('#activitypagebutton').on('click', function(){
         var openPage = () =>{
             $activitypage.css('display', 'flex');
+            
         };
         setTimeout(openPage, 500);
         

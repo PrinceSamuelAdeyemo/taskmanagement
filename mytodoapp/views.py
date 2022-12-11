@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 from django.http import HttpResponse, JsonResponse
+
 from django.contrib import messages
 from datetime import datetime
 
@@ -14,7 +15,7 @@ from .models import Profile, BusinessProfile, Task, SubTask
 
 
 
-
+###### Sign up view ######
 class Signup(View):
     
     global user_objects
@@ -88,7 +89,7 @@ class Signup(View):
             return render(request, 'login.html')
             
         
-
+###### Log in view ######
 class Login(View):
     
     def get(self, request):
@@ -190,6 +191,7 @@ class Login(View):
                 return HttpResponse('None of the personal and business login works!')
         
     
+###### Log out view ######
 @login_required(login_url='login')    
 def logout(request):
     auth.logout(request)
@@ -197,13 +199,100 @@ def logout(request):
 
 #@login_required(login_url = "login")
 
+
+###### Homepage view ######
 class Index(View):
     def get(self, request):
-        return render(request, 'todoapp.html')
+        if request.method == 'GET':# and request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            taskOwner = request.user.username
+            user_model = User.objects.get(username = taskOwner)
+            activities = Task.objects.all()
+            user_activities = Task.objects.filter(task_owner = taskOwner)
+            user_activities_completed = Task.objects.filter(task_owner = taskOwner, task_done = True, in_progress = False)
+            user_activities_progress = Task.objects.filter(task_owner = taskOwner, task_done = False, in_progress = True)
+            user_activities_notstarted = Task.objects.filter(task_owner = taskOwner, task_done = False, in_progress = False)
+            try:
+                profile = Profile.objects.get(personal_basicdetails = user_model)
+                #activities = Task.objects.filter(task_owner = taskOwner).order_by('task_dateUpdated')
+                activities = Task.objects.all()
+                return HttpResponse("Return in personal")
+            
+            except Profile.DoesNotExist:
+                profile = BusinessProfile.objects.get(business_basicdetails = user_model)
+                #activities = Task.objects.filter(task_owner).order_by('task_dateUpdated')
+                activities = Task.objects.all()
+                return HttpResponse("Return in personal")
+            
+            finally:
+                
+                    
+                #context = {'profile': profile, 'activities': activities, 'user_activities': user_activities, 
+                #           'user_activities_completed': user_activities_completed, 'user_activities_progress': user_activities_progress, 
+                #           'user_activities_notstarted': user_activities_notstarted,}
+                
+                '''return JsonResponse({
+                    #'profile': profile, 
+                    'activities': list(activities.values()), 
+                    'user_activities': list(user_activities.values()), 
+                    'user_activities_completed': list(user_activities_completed.values()), 
+                    'user_activities_progress': list(user_activities_progress.values()), 
+                    'user_activities_notstarted': list(user_activities_notstarted.values()),
+                    }, 
+                                    safe=False)'''
+                return render(request, 'todoapp.html')
+                
+        else:
+            return HttpResponse("Ajax not responding")
 
+
+def getActivities(request):
+    if request.method == 'GET' and request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        taskOwner = request.user.username
+        user_model = User.objects.get(username = taskOwner)
+        activities = Task.objects.all()
+        user_activities = Task.objects.filter(task_owner = taskOwner)
+        user_activities_completed = Task.objects.filter(task_owner = taskOwner, task_done = True, in_progress = False)
+        user_activities_progress = Task.objects.filter(task_owner = taskOwner, task_done = False, in_progress = True)
+        user_activities_notstarted = Task.objects.filter(task_owner = taskOwner, task_done = False, in_progress = False)
+        try:
+            profile = Profile.objects.get(personal_basicdetails = user_model)
+            #activities = Task.objects.filter(task_owner = taskOwner).order_by('task_dateUpdated')
+            activities = Task.objects.all()
+            return HttpResponse("Return in personal")
+        
+        except Profile.DoesNotExist:
+            profile = BusinessProfile.objects.get(business_basicdetails = user_model)
+            #activities = Task.objects.filter(task_owner).order_by('task_dateUpdated')
+            activities = Task.objects.all()
+            return HttpResponse("Return in personal")
+        
+        finally:
+            
+                
+            #context = {'profile': profile, 'activities': activities, 'user_activities': user_activities, 
+            #           'user_activities_completed': user_activities_completed, 'user_activities_progress': user_activities_progress, 
+            #           'user_activities_notstarted': user_activities_notstarted,}
+            
+            return JsonResponse({
+                #'profile': profile, 
+                'activities': list(activities.values()), 
+                'user_activities': list(user_activities.values()), 
+                'user_activities_completed': list(user_activities_completed.values()), 
+                'user_activities_progress': list(user_activities_progress.values()), 
+                'user_activities_notstarted': list(user_activities_notstarted.values()),
+                }, 
+                                safe=False)
+        #return render(request, 'todoapp.html', context=context)
+                
+    #else:
+        #return HttpResponse("Not receiving any Django request")
+
+###### Calendar view ######
 @login_required(login_url = "login")
 def calendar(request):
     return render(request, 'calendar.html')
+
+
 
 @login_required(login_url = "login")
 def settings(request):
@@ -211,6 +300,7 @@ def settings(request):
 
 
     
+###### Createtask view  from the create task button in the html ######
 class CreateTask(LoginRequiredMixin, View):
     login_url = 'login'
     redirect_field_name: 'signup'
@@ -220,7 +310,7 @@ class CreateTask(LoginRequiredMixin, View):
     def post(self, request):
         
         #if 'createtask' in request.POST:
-        if request.method == 'POST':
+        if request.method == 'POST' and request.headers.get('x-requested-with') == 'XMLHttpRequest':
             '''
             if 'None':
                 return HttpResponse('Response is None')
@@ -233,9 +323,10 @@ class CreateTask(LoginRequiredMixin, View):
             
             taskOwner = request.user.username
             taskName = request.POST['task_name']
+            
             taskDescription = request.POST['task_description']
             
-            subtask_name = request.POST["subtaskinput"]
+            subtask_name = request.POST["subTaskArray"]
             #task_file
             #task_image
             #task_done
@@ -248,17 +339,33 @@ class CreateTask(LoginRequiredMixin, View):
             checkpersonal_task = Task.objects.filter(personalTaskowner = personal_profile, task_name = taskName, task_description = taskDescription).exists()
             if checkpersonal_task:
                 personal_task = Task.objects.get(personalTaskowner = personal_profile, task_name = taskName, task_description = taskDescription)
-                subtask_name_model = SubTask.objects.create(task_parent = personal_task, subtask_name=subtask_name, subtask_date=datetime.now())
-                subtask_name_model.save()
-                return HttpResponse('Exists, but saved')
+                if subtask_name == '':
+                    return HttpResponse('Empty subtask')
+                else:
+                    checksubtask_namemodel = SubTask.objects.filter(task_parent = personal_task, subtask_name = subtask_name).exists()
+                    if checksubtask_namemodel:
+                        return HttpResponse("Can't save, exist")
+                    else:
+                        for eachsubtask in range(len(subtask_name)):
+                            subtask_name_model = SubTask.objects.create(task_parent = personal_task, subtask_name=subtask_name[eachsubtask], subtask_date=datetime.now())
+                            subtask_name_model.save()
+                        return HttpResponse('Exists, but saved subtask')
+                    
             else:
                 task_model = Task.objects.create(personalTaskowner = personal_profile, task_owner = user, task_name = taskName, task_description = taskDescription, task_date = datetime.now())
                 task_model.save()
             
                 #personal_task = Task.objects.filter(personalTaskowner = personal_profile, task_name = taskName, task_description = taskDescription).first()
                 personal_task = Task.objects.get(personalTaskowner = personal_profile, task_name = taskName, task_description = taskDescription)
-                subtask_name_model = SubTask.objects.create(task_parent = personal_task, subtask_name=subtask_name, subtask_date=datetime.now())
-                subtask_name_model.save()
+                if subtask_name == '':
+                    return HttpResponse('empty')
+                else:
+                    checksubtask_namemodel = SubTask.objects.filter(task_parent = personal_task, subtask_name = subtask_name).exists()
+                    if checksubtask_namemodel:
+                        return HttpResponse("Can't save, no")
+                    else:
+                        subtask_name_model = SubTask.objects.create(task_parent = personal_task, subtask_name=subtask_name, subtask_date=datetime.now())
+                        subtask_name_model.save()
                 return HttpResponse('Success')
          
         else:
@@ -277,27 +384,72 @@ def add_record(request):
         return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-def createtas(request):
-    if request.method == 'POST':
-        #return HttpResponse(list(request.POST.items()))#, '+', list(request.POST.items()))
+###### Createsubtask view  from the create task button in the html ######
+class CreateSubTask(LoginRequiredMixin, View):
+    login_url = 'login'
+    redirect_field_name: 'signup'
+    
+    def get(self, request):
+        pass
+    
+    def post(self, request):
         
-        if 'subtaskinput' in request.POST:
-            user = request.user.username
-            personal_model = User.objects.filter(username = user).first()
-            personal_profile = Profile.objects.get(personal_basicdetails = personal_model)
-            '''
-            personal_task = Task.objects.get(personalTaskowner = personal_profile, task_name = , task_description = )
-            subtask_name = request.POST["subtaskinput"]
+        if request.method == 'POST':
+            #return HttpResponse(list(request.POST.items()))#, '+', list(request.POST.items()))
             
+            if 'subtaskinput' in request.POST and request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                
+                taskName = request.POST['task_name']
+                if (taskName != None):
+                    user = request.user.username
+                
+                    taskOwner = request.user.username
+                    taskDescription = request.POST['task_description']
+                    subtask_name = request.POST["subtaskinput"]
+                    
+                    personal_model = User.objects.filter(username = user).first()
+                    personal_profile = Profile.objects.get(personal_basicdetails = personal_model)
+                    
+                    checkpersonal_task = Task.objects.filter(personalTaskowner = personal_profile, task_name = taskName, task_description = taskDescription).exists()
+                    if checkpersonal_task:
+                        personal_task = Task.objects.get(personalTaskowner = personal_profile, task_name = taskName, task_description = taskDescription)
+                        checkpersonal_subtask = SubTask.objects.filter(task_parent = personal_task, subtask_name = subtask_name).exists()
+                        if checkpersonal_subtask:
+                            messages.info(request, "Sub task for this task already exist!")
+                            return HttpResponse("sub task won't create")
+                        
+                        else:
+                            subtask_name_model = SubTask.objects.create(task_parent = personal_task, subtask_name=subtask_name, subtask_date=datetime.now())
+                            subtask_name_model.save()
+                            return HttpResponse('SUB Exists, but saved')
+                    else:
+                        task_model = Task.objects.create(personalTaskowner = personal_profile, task_owner = user, task_name = taskName, task_description = taskDescription, task_date = datetime.now())
+                        task_model.save()
+                    
+                        #personal_task = Task.objects.filter(personalTaskowner = personal_profile, task_name = taskName, task_description = taskDescription).first()
+                        personal_task = Task.objects.get(personalTaskowner = personal_profile, task_name = taskName, task_description = taskDescription)
+                        subtask_name_model = SubTask.objects.create(task_parent = personal_task, subtask_name=subtask_name, subtask_date=datetime.now())
+                        subtask_name_model.save()
+                        return HttpResponse('Success')
+                    
+                    '''
+                    personal_task = Task.objects.get(personalTaskowner = personal_profile, task_name = , task_description = )
+                    subtask_name = request.POST["subtaskinput"]
+                    
+                    
+                    subtask_name_model = SubTask.objects.create(task_parent = personal_task, subtask_name=subtask_name, subtask_date=datetime.now())
+                    subtask_name_model.save()
+                    '''
+                    #return HttpResponse('Saved')
+                    
+                else:
+                    messages.info(request, 'Please enter a task name')
+                
+                
             
-            subtask_name_model = SubTask.objects.create(task_parent = personal_task, subtask_name=subtask_name, subtask_date=datetime.now())
-            subtask_name_model.save()
-            '''
-            return HttpResponse('Saved')
-        
-        else:
-            return HttpResponse('It is not there')
-        
+            else:
+                return HttpResponse('It is not there')
+            
         
         '''
         #name = request.POST['task_nam']
@@ -350,3 +502,6 @@ def createtas(request):
             
             return HttpResponse('Success')
             '''
+            
+def calculator(request):
+    return render(request, 'calculator.html')

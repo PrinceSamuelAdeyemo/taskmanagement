@@ -1,0 +1,106 @@
+.calculator-div{
+    background-color: red;
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.main-calculator{
+    background-color: green;
+    height: 90%;
+    width: 50%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.mycal{
+    background-color: white;
+    height: 85%;
+    width: 50%;
+    border-radius: 1rem;
+    display: flex;
+    
+    position: relative;
+
+    
+}
+
+.camera-circle{
+    position: absolute;
+    top: 7px;
+    right: 50%;
+
+    background-color: red;
+    
+    border-radius: 50%;
+    height: 5%;
+    width: 5%;
+}
+
+.mycal-subdiv{
+    background-color: white;
+    width: 100%;
+    height: 100%;
+    position: relative;
+
+    border-radius: 1rem;
+    border-top: 20px solid black;
+    border-left: 10px solid black;
+    border-right: 10px solid black;
+    border-bottom: 20px solid black;
+
+}
+
+.mycal-subdiv div:last-of-type{
+    
+}
+
+.calculator-screen{
+    background-color: black;
+    height: 20%;
+}
+
+.calculator-input{
+    background-color: darkslategray;
+    height: 50%;
+}
+
+.calculator-output{
+    background-color: darkslategray;
+    height: 50%;
+}
+.textScreen{
+    background-color: darkslategray;
+    color: white;
+    width: 100%;
+    border: none;
+    height: 100%;
+    line-height: 100%;
+}
+
+.textInput, .textInput:hover, .textInput:focus, .textInput:focus-within{
+    border: 0;
+    box-shadow: none;
+    outline: none;
+}
+
+.calculator-buttons{
+    width:100%;
+    position: absolute;
+    top: 12rem;
+
+}
+
+
+.button-table{
+    width: inherit;
+}
+.key{
+    width: 100%;
+    border: 2px solid blue;
+}
