@@ -11,6 +11,8 @@ from django.contrib import messages
 from datetime import datetime
 
 from .models import Profile, BusinessProfile, Task, SubTask
+
+import json
 # Create your views here.
 
 
@@ -318,7 +320,7 @@ class CreateTask(LoginRequiredMixin, View):
                 return HttpResponse('Response is Not none')
             #return HttpResponse("Sent")
             '''
-            
+            # Get the user and task details from the front end.
             user = request.user.username
             
             taskOwner = request.user.username
@@ -326,48 +328,92 @@ class CreateTask(LoginRequiredMixin, View):
             
             taskDescription = request.POST['task_description']
             
-            subtask_name = request.POST["subTaskArray"]
+            subtask_names = request.POST.getlist("subTaskArray[]")
+            #subtask_names = json.loads(request.)
+            
+            #print(allsubtask_names)
+            #subtask_names = [allsubtask_names]
             #task_file
             #task_image
             #task_done
-            #subtask
+            #subtask_name = ''
+            
+            # Check and access the profile of the user gotten from the front end.
             personal_model = User.objects.filter(username = user).first()
             personal_profile = Profile.objects.get(personal_basicdetails = personal_model)
             #if personal_model.exists():
             #return HttpResponse(f"{personal_model}")
             
+            # Check if the task name received already exists.
+            # If it does not exists, create the task and save it.
+            # After the save, get the task which was saved and check if if the sub task was added, if it wasn't. Don't save any subtask, but if the sub task was added.
+            #  Check if the sub task exists for the partcular task, if not, Save the subtasks also.
+            
             checkpersonal_task = Task.objects.filter(personalTaskowner = personal_profile, task_name = taskName, task_description = taskDescription).exists()
-            if checkpersonal_task:
-                personal_task = Task.objects.get(personalTaskowner = personal_profile, task_name = taskName, task_description = taskDescription)
-                if subtask_name == '':
-                    return HttpResponse('Empty subtask')
-                else:
-                    checksubtask_namemodel = SubTask.objects.filter(task_parent = personal_task, subtask_name = subtask_name).exists()
-                    if checksubtask_namemodel:
-                        return HttpResponse("Can't save, exist")
-                    else:
-                        for eachsubtask in range(len(subtask_name)):
-                            subtask_name_model = SubTask.objects.create(task_parent = personal_task, subtask_name=subtask_name[eachsubtask], subtask_date=datetime.now())
-                            subtask_name_model.save()
-                        return HttpResponse('Exists, but saved subtask')
-                    
-            else:
+            if not checkpersonal_task:
                 task_model = Task.objects.create(personalTaskowner = personal_profile, task_owner = user, task_name = taskName, task_description = taskDescription, task_date = datetime.now())
                 task_model.save()
-            
-                #personal_task = Task.objects.filter(personalTaskowner = personal_profile, task_name = taskName, task_description = taskDescription).first()
-                personal_task = Task.objects.get(personalTaskowner = personal_profile, task_name = taskName, task_description = taskDescription)
-                if subtask_name == '':
+                
+                #if task_model.save() == True:
+                
+                #personal_task = Task.objects.get(personalTaskowner = personal_profile, task_name = taskName, task_description = taskDescription)
+                #personal_task = Task.objects.get_or_create(personalTaskowner = personal_profile, task_owner = user, task_name = taskName, task_description = taskDescription)
+
+                if (subtask_names == '' or subtask_names == [] or len(subtask_names) == 0):
                     return HttpResponse('empty')
+                
                 else:
-                    checksubtask_namemodel = SubTask.objects.filter(task_parent = personal_task, subtask_name = subtask_name).exists()
+                    personal_task = Task.objects.get(personalTaskowner = personal_profile, task_name = taskName, task_description = taskDescription)
+           
+                    
+                    #subtask_name = subtask_names.split(',')
+                    #print(subtask_name)
+                    for eachsubtask in range(len(subtask_names)):
+                        #return HttpResponse()
+                        checksubtask_namemodel = SubTask.objects.filter(task_parent = personal_task, subtask_name = subtask_names[eachsubtask]).exists()
+                        if checksubtask_namemodel:
+                            return HttpResponse("Can't save, exist")
+                        else:
+                            for eachsubtask in range(len(subtask_names)):
+                                subtask_name_model = SubTask.objects.create(task_parent = personal_task, subtask_name=subtask_names[eachsubtask], subtask_date=datetime.now())
+                                subtask_name_model.save()
+                            return HttpResponse('Exists, but saved subtask')
+                        
+                """else:
+                    personal_task = Task.objects.get_or_create(personalTaskowner = personal_profile, task_owner = user, task_name = taskName, task_description = taskDescription)
+
+                    checksubtask_namemodel = SubTask.objects.filter(task_parent = personal_task, subtask_name = subtask_name[eachsubtask]).exists()
                     if checksubtask_namemodel:
                         return HttpResponse("Can't save, no")
                     else:
-                        subtask_name_model = SubTask.objects.create(task_parent = personal_task, subtask_name=subtask_name, subtask_date=datetime.now())
+                        subtask_name_model = SubTask.objects.create(task_parent = personal_task, subtask_name=subtask_name[eachsubtask], subtask_date=datetime.now())
                         subtask_name_model.save()
-                return HttpResponse('Success')
-         
+                        return HttpResponse('Success')"""
+                
+                #else:
+                #    return HttpResponse('Did not save.')
+            
+                
+            else:
+                personal_task = Task.objects.get(personalTaskowner = personal_profile, task_name = taskName, task_description = taskDescription)
+           
+                if (subtask_names == '' or subtask_names == [] or len(subtask_names) == 0):
+                    return HttpResponse('Empty subtask')
+                else:
+                    #subtask_name = subtask_names.split(',')
+                    #print(subtask_name)
+                    for eachsubtask in range(len(subtask_names)):
+                        #return HttpResponse()
+                        checksubtask_namemodel = SubTask.objects.filter(task_parent = personal_task, subtask_name = subtask_names[eachsubtask]).exists()
+                        if checksubtask_namemodel:
+                            return HttpResponse("Can't save, exist")
+                        else:
+                            for eachsubtask in range(len(subtask_names)):
+                                subtask_name_model = SubTask.objects.create(task_parent = personal_task, subtask_name=subtask_names[eachsubtask], subtask_date=datetime.now())
+                                subtask_name_model.save()
+                            return HttpResponse('Exists, but saved subtask')
+                    
+            
         else:
             return HttpResponse("Not create task")
          
@@ -452,21 +498,11 @@ class CreateSubTask(LoginRequiredMixin, View):
             
         
         '''
-        #name = request.POST['task_nam']
-        #des = request.POST['task_descriptio']
-        user = request.user.username
-            
-        taskOwner = request.user.username
-        taskName = request.POST['task_name']
-        taskDescription = request.POST['task_description']
         #task_file
         #task_image
         #task_done
         #subtask
-        personal_model = User.objects.filter(username = user).first()
-        personal_profile = Profile.objects.get(personal_basicdetails = personal_model)
-        #if personal_model.exists():
-        #return HttpResponse(f"{personal_model}")
+        
         
         
         task_model = Task.objects.create(personalTaskowner = personal_profile, task_owner = user, task_name = taskName, task_description = taskDescription, task_date = datetime.now())
@@ -491,12 +527,6 @@ class CreateSubTask(LoginRequiredMixin, View):
             #task_image
             #task_done
             #subtask
-            personal_model = User.objects.filter(username = user).first()
-            personal_profile = Profile.objects.get(personal_basicdetails = personal_model)
-            #if personal_model.exists():
-            #return HttpResponse(f"{personal_model}")
-            
-            
             task_model = Task.objects.create(personalTaskowner = personal_profile, task_owner = user, task_name = taskName, task_description = taskDescription, task_date = datetime.now())
             task_model.save()
             
