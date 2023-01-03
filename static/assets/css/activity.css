@@ -1,3 +1,5 @@
+/*
+
 .for-allbg{
     position: relative;
     
@@ -21,17 +23,17 @@
     width: inherit;
     height: inherit;
     overflow-y: scroll;
-    /*background-color: green;*/
+    /*background-color: green;*
     background: rgba(0,0,0,0.5);
 }
 
 
 .activity-panelsubdiv{
-    /* Serving as a child to activity-panel */
+    /* Serving as a child to activity-panel *
     width: 100%;
     height: 100%;
 
-    /* Serving as a parent to activity-panel-output */
+    /* Serving as a parent to activity-panel-output *
     
     overflow: hidden !important;
     position: relative;
@@ -57,7 +59,7 @@
     /*
     line-break: normal;
     word-break: break-all;
-    */
+    *
 }
 
 .activity-panel-output{
@@ -66,3 +68,6 @@
     width: 100%;
     background-color: inherit;
 }
+
+*/
+

@@ -1,3 +1,5 @@
+/*
+
 jQuery(function($){
     $activitypage = $('#activity-panel');
 
@@ -19,4 +21,10 @@ jQuery(function($){
         setTimeout(openPage, 500);
         
     });
+})
+
+*/
+
+jQuery(function($){
+    
 })

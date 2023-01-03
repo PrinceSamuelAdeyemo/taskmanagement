@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages, auth
 from django.contrib.auth.models import User
 from django.utils.decorators import method_decorator
@@ -10,8 +10,7 @@ from django.http import HttpResponse, JsonResponse
 from django.contrib import messages
 from datetime import datetime
 
-from .models import Profile, BusinessProfile, Task, SubTask
-
+from .models import Profile, BusinessProfile, Project, Board, Task
 import json
 # Create your views here.
 
@@ -40,25 +39,30 @@ class Signup(View):
             
             required_fields = [username, firstName, middleName, lastName, email, password, password2]
             
-            for each_field in required_fields:
-                if each_field != '' or each_field != None:
-                    if User.objects.filter(username = username).exists():
+            #for each_field in required_fields:
+            if any(each_field == '' for each_field in required_fields):
+                return redirect('/')
+                    
+                
+            else:
+                if User.objects.filter(username = username).exists():
                         messages.warning(request, "Username is taken!")
                     
+                else:
+                    if password == password2:
+                        
+                        user_model = User.objects.create_user(username = username, first_name = firstName, last_name = lastName, email = email, password = password)
+                        user_model.save()
+                        
+                        user_profile = Profile.objects.create(personal_basicdetails = user_model, id_profile = user_model.id)
+                        authenticated_user = auth.authenticate(request, username = username, password = password)
+                        auth.login(request, authenticated_user)
+                        return redirect('/dashboard')
+                        
+                        
                     else:
-                        if password == password2:
-                            
-                            user_model = User.objects.create_user(username = username, first_name = firstName, last_name = lastName, email = email, password = password)
-                            user_model.save()
-                           
-                            user_profile = Profile.objects.create(personal_basicdetails = user_model, id_profile = user_model.id)
-                            authenticated_user = auth.authenticate(request, username = username, password = password)
-                            auth.login(request, authenticated_user)
-                            
-                            
-                        else:
-                            messages.warning(request, "Passwords don't match!")
-                    
+                        messages.warning(request, "Passwords don't match!")
+        
         elif 'businessSignupSubmit' in request.POST:
             username = request.POST['username'].lower()
             companyName = request.POST['companyName']
@@ -69,24 +73,26 @@ class Signup(View):
             
             required_fields = [username, companyName, email, password, password2]
             
-            for each_field in required_fields:
-                if each_field != '' or each_field != None:
-                    if User.objects.filter(username = username).exists():
-                        messages.warning(request, "Username is taken!")
-                        
-                    else:
-                        if password == password2:
-                            user_model = User.objects.create_user(username = username, first_name = companyName, last_name = companyNameabbr, email = email, password = password)
-                            user_model.save()
-                            #userr = user_model.remove(task_id)
-                            business_profile = BusinessProfile.objects.create(business_basicdetails = user_model, businessprofile_id = user_model.id)
-                            authenticated_user = auth.authenticate(request, username = username, password = password)
-                            auth.login(request, authenticated_user)
-                            return redirect('/')
-                        
-                        else:
-                            messages.warning(request, "Passwords don't match!")
+            if any(each_field == '' for each_field in required_fields):
+                return redirect('/')
+            
+            else:
+                if User.objects.filter(username = username).exists():
+                    messages.warning(request, "Username is taken!")
                     
+                else:
+                    if password == password2:
+                        user_model = User.objects.create_user(username = username, first_name = companyName, last_name = companyNameabbr, email = email, password = password)
+                        user_model.save()
+                        #userr = user_model.remove(task_id)
+                        business_profile = BusinessProfile.objects.create(business_basicdetails = user_model, businessprofile_id = user_model.id)
+                        authenticated_user = auth.authenticate(request, username = username, password = password)
+                        auth.login(request, authenticated_user)
+                        return redirect('/dashboard')
+                    
+                    else:
+                        messages.warning(request, "Passwords don't match!")
+                
         else:
             return render(request, 'login.html')
             
@@ -126,7 +132,7 @@ class Login(View):
                         authenticated_user = auth.authenticate(request, username = User.objects.get(email = email), password = password)
                         if authenticated_user != None:
                             auth.login(request, authenticated_user)
-                            return redirect('/')
+                            return redirect('/dashboard')
                         else:
                             messages.info(request, "Profile does not exist!")
                             return redirect('/login')
@@ -171,7 +177,7 @@ class Login(View):
                         authenticated_user = auth.authenticate(request, username = User.objects.get(email = email), password = password)
                         if authenticated_user != None:
                             auth.login(request, authenticated_user)
-                            return redirect('/')
+                            return redirect('/dashboard')
                         else:
                             messages.info(request, "Business Profile does not exist!")
                             return redirect('/login')
@@ -205,67 +211,32 @@ def logout(request):
 ###### Homepage view ######
 class Index(View):
     def get(self, request):
-        if request.method == 'GET':# and request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            taskOwner = request.user.username
-            user_model = User.objects.get(username = taskOwner)
-            activities = Task.objects.all()
-            user_activities = Task.objects.filter(task_owner = taskOwner)
-            user_activities_completed = Task.objects.filter(task_owner = taskOwner, task_done = True, in_progress = False)
-            user_activities_progress = Task.objects.filter(task_owner = taskOwner, task_done = False, in_progress = True)
-            user_activities_notstarted = Task.objects.filter(task_owner = taskOwner, task_done = False, in_progress = False)
-            try:
-                profile = Profile.objects.get(personal_basicdetails = user_model)
-                #activities = Task.objects.filter(task_owner = taskOwner).order_by('task_dateUpdated')
-                activities = Task.objects.all()
-                return HttpResponse("Return in personal")
-            
-            except Profile.DoesNotExist:
-                profile = BusinessProfile.objects.get(business_basicdetails = user_model)
-                #activities = Task.objects.filter(task_owner).order_by('task_dateUpdated')
-                activities = Task.objects.all()
-                return HttpResponse("Return in personal")
-            
-            finally:
-                
-                    
-                #context = {'profile': profile, 'activities': activities, 'user_activities': user_activities, 
-                #           'user_activities_completed': user_activities_completed, 'user_activities_progress': user_activities_progress, 
-                #           'user_activities_notstarted': user_activities_notstarted,}
-                
-                '''return JsonResponse({
-                    #'profile': profile, 
-                    'activities': list(activities.values()), 
-                    'user_activities': list(user_activities.values()), 
-                    'user_activities_completed': list(user_activities_completed.values()), 
-                    'user_activities_progress': list(user_activities_progress.values()), 
-                    'user_activities_notstarted': list(user_activities_notstarted.values()),
-                    }, 
-                                    safe=False)'''
-                return render(request, 'todoapp.html')
-                
-        else:
-            return HttpResponse("Ajax not responding")
-
-
+        return render(request, 'homepage.html')
+    
+    def post(self, request):
+        pass
+    
+    
+    
 def getActivities(request):
     if request.method == 'GET' and request.headers.get('x-requested-with') == 'XMLHttpRequest':
-        taskOwner = request.user.username
-        user_model = User.objects.get(username = taskOwner)
-        activities = Task.objects.all()
-        user_activities = Task.objects.filter(task_owner = taskOwner)
-        user_activities_completed = Task.objects.filter(task_owner = taskOwner, task_done = True, in_progress = False)
-        user_activities_progress = Task.objects.filter(task_owner = taskOwner, task_done = False, in_progress = True)
-        user_activities_notstarted = Task.objects.filter(task_owner = taskOwner, task_done = False, in_progress = False)
+        boardOwner = request.user.username
+        user_model = User.objects.get(username = boardOwner)
+        activities = Board.objects.all()
+        user_activities = Board.objects.filter(board_owner = boardOwner)
+        user_activities_completed = Board.objects.filter(board_owner = boardOwner, board_completed = True, board_inprogress = False)
+        user_activities_progress = Board.objects.filter(board_owner = boardOwner, board_completed = False, board_inprogress = True)
+        user_activities_notstarted = Board.objects.filter(board_owner = boardOwner, board_completed = False, board_inprogress = False)
         try:
             profile = Profile.objects.get(personal_basicdetails = user_model)
-            #activities = Task.objects.filter(task_owner = taskOwner).order_by('task_dateUpdated')
-            activities = Task.objects.all()
+            #activities = Board.objects.filter(task_owner = taskOwner).order_by('task_dateUpdated')
+            activities = Board.objects.all()
             return HttpResponse("Return in personal")
         
         except Profile.DoesNotExist:
             profile = BusinessProfile.objects.get(business_basicdetails = user_model)
-            #activities = Task.objects.filter(task_owner).order_by('task_dateUpdated')
-            activities = Task.objects.all()
+            #activities = Board.objects.filter(task_owner).order_by('task_dateUpdated')
+            activities = Board.objects.all()
             return HttpResponse("Return in personal")
         
         finally:
@@ -294,7 +265,8 @@ def getActivities(request):
 def calendar(request):
     return render(request, 'calendar.html')
 
-
+def activities(request):
+    return render(request, 'boards.html')
 
 @login_required(login_url = "login")
 def settings(request):
@@ -302,12 +274,53 @@ def settings(request):
 
 
     
-###### Createtask view  from the create task button in the html ######
-class CreateTask(LoginRequiredMixin, View):
+###### Createtask view  from the create board button in the html ######
+class DashBoard(LoginRequiredMixin, View):
     login_url = 'login'
     redirect_field_name: 'signup'
     def get(self, request):
-        return render(request, 'todoapp.html')
+        if request.method == 'GET':# and request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            boardOwner = request.user.username
+            user_model = User.objects.get(username = boardOwner)
+            activities = Board.objects.all()
+            user_activities = Board.objects.filter(board_owner = boardOwner)
+            user_activities_completed = Board.objects.filter(board_owner = boardOwner, board_completed = True, board_inprogress = False)
+            user_activities_progress = Board.objects.filter(board_owner = boardOwner, board_completed = False, board_inprogress = True)
+            user_activities_notstarted = Board.objects.filter(board_owner = boardOwner, board_completed = False, board_inprogress = False)
+            try:
+                profile = Profile.objects.get(personal_basicdetails = user_model)
+                #activities = Board.objects.filter(task_owner = taskOwner).order_by('task_dateUpdated')
+                activities = Board.objects.all()
+                return HttpResponse("Return in personal")
+            
+            except Profile.DoesNotExist:
+                profile = BusinessProfile.objects.get(business_basicdetails = user_model)
+                #activities = Board.objects.filter(task_owner).order_by('task_dateUpdated')
+                activities = Board.objects.all()
+                return HttpResponse("Return in personal")
+            
+            finally:
+                
+                    
+                #context = {'profile': profile, 'activities': activities, 'user_activities': user_activities, 
+                #           'user_activities_completed': user_activities_completed, 'user_activities_progress': user_activities_progress, 
+                #           'user_activities_notstarted': user_activities_notstarted,}
+                
+                '''return JsonResponse({
+                    #'profile': profile, 
+                    'activities': list(activities.values()), 
+                    'user_activities': list(user_activities.values()), 
+                    'user_activities_completed': list(user_activities_completed.values()), 
+                    'user_activities_progress': list(user_activities_progress.values()), 
+                    'user_activities_notstarted': list(user_activities_notstarted.values()),
+                    }, 
+                                    safe=False)'''
+                return render(request, 'dashboard.html')
+                
+        else:
+            return HttpResponse("Ajax not responding")
+
+
     
     def post(self, request):
         
@@ -320,7 +333,7 @@ class CreateTask(LoginRequiredMixin, View):
                 return HttpResponse('Response is Not none')
             #return HttpResponse("Sent")
             '''
-            # Get the user and task details from the front end.
+            # Get the user and board details from the front end.
             user = request.user.username
             
             taskOwner = request.user.username
@@ -328,15 +341,15 @@ class CreateTask(LoginRequiredMixin, View):
             
             taskDescription = request.POST['task_description']
             
-            subtask_names = request.POST.getlist("subTaskArray[]")
-            #subtask_names = json.loads(request.)
+            task_names = request.POST.getlist("subTaskArray[]")
+            #task_names = json.loads(request.)
             
-            #print(allsubtask_names)
-            #subtask_names = [allsubtask_names]
+            #print(alltask_names)
+            #task_names = [alltask_names]
             #task_file
             #task_image
             #task_done
-            #subtask_name = ''
+            #task_name = ''
             
             # Check and access the profile of the user gotten from the front end.
             personal_model = User.objects.filter(username = user).first()
@@ -344,50 +357,50 @@ class CreateTask(LoginRequiredMixin, View):
             #if personal_model.exists():
             #return HttpResponse(f"{personal_model}")
             
-            # Check if the task name received already exists.
-            # If it does not exists, create the task and save it.
-            # After the save, get the task which was saved and check if if the sub task was added, if it wasn't. Don't save any subtask, but if the sub task was added.
-            #  Check if the sub task exists for the partcular task, if not, Save the subtasks also.
+            # Check if the board name received already exists.
+            # If it does not exists, create the board and save it.
+            # After the save, get the board which was saved and check if if the sub board was added, if it wasn't. Don't save any task, but if the sub board was added.
+            #  Check if the sub board exists for the partcular board, if not, Save the tasks also.
             
-            checkpersonal_task = Task.objects.filter(personalTaskowner = personal_profile, task_name = taskName, task_description = taskDescription).exists()
+            checkpersonal_task = Board.objects.filter(personalTaskowner = personal_profile, task_name = taskName, task_description = taskDescription).exists()
             if not checkpersonal_task:
-                task_model = Task.objects.create(personalTaskowner = personal_profile, task_owner = user, task_name = taskName, task_description = taskDescription, task_date = datetime.now())
+                task_model = Board.objects.create(personalTaskowner = personal_profile, task_owner = user, task_name = taskName, task_description = taskDescription, task_date = datetime.now())
                 task_model.save()
                 
                 #if task_model.save() == True:
                 
-                #personal_task = Task.objects.get(personalTaskowner = personal_profile, task_name = taskName, task_description = taskDescription)
-                #personal_task = Task.objects.get_or_create(personalTaskowner = personal_profile, task_owner = user, task_name = taskName, task_description = taskDescription)
+                #personal_task = Board.objects.get(personalTaskowner = personal_profile, task_name = taskName, task_description = taskDescription)
+                #personal_task = Board.objects.get_or_create(personalTaskowner = personal_profile, task_owner = user, task_name = taskName, task_description = taskDescription)
 
-                if (subtask_names == '' or subtask_names == [] or len(subtask_names) == 0):
+                if (task_names == '' or task_names == [] or len(task_names) == 0):
                     return HttpResponse('empty')
                 
                 else:
-                    personal_task = Task.objects.get(personalTaskowner = personal_profile, task_name = taskName, task_description = taskDescription)
+                    personal_task = Board.objects.get(personalTaskowner = personal_profile, task_name = taskName, task_description = taskDescription)
            
                     
-                    #subtask_name = subtask_names.split(',')
-                    #print(subtask_name)
-                    for eachsubtask in range(len(subtask_names)):
+                    #task_name = task_names.split(',')
+                    #print(task_name)
+                    for eachtask in range(len(task_names)):
                         #return HttpResponse()
-                        checksubtask_namemodel = SubTask.objects.filter(task_parent = personal_task, subtask_name = subtask_names[eachsubtask]).exists()
-                        if checksubtask_namemodel:
+                        checktask_namemodel = SubTask.objects.filter(task_parent = personal_task, task_name = task_names[eachtask]).exists()
+                        if checktask_namemodel:
                             return HttpResponse("Can't save, exist")
                         else:
-                            for eachsubtask in range(len(subtask_names)):
-                                subtask_name_model = SubTask.objects.create(task_parent = personal_task, subtask_name=subtask_names[eachsubtask], subtask_date=datetime.now())
-                                subtask_name_model.save()
-                            return HttpResponse('Exists, but saved subtask')
+                            for eachtask in range(len(task_names)):
+                                task_name_model = SubTask.objects.create(task_parent = personal_task, task_name=task_names[eachtask], task_date=datetime.now())
+                                task_name_model.save()
+                            return HttpResponse('Exists, but saved task')
                         
                 """else:
-                    personal_task = Task.objects.get_or_create(personalTaskowner = personal_profile, task_owner = user, task_name = taskName, task_description = taskDescription)
+                    personal_task = Board.objects.get_or_create(personalTaskowner = personal_profile, task_owner = user, task_name = taskName, task_description = taskDescription)
 
-                    checksubtask_namemodel = SubTask.objects.filter(task_parent = personal_task, subtask_name = subtask_name[eachsubtask]).exists()
-                    if checksubtask_namemodel:
+                    checktask_namemodel = SubTask.objects.filter(task_parent = personal_task, task_name = task_name[eachtask]).exists()
+                    if checktask_namemodel:
                         return HttpResponse("Can't save, no")
                     else:
-                        subtask_name_model = SubTask.objects.create(task_parent = personal_task, subtask_name=subtask_name[eachsubtask], subtask_date=datetime.now())
-                        subtask_name_model.save()
+                        task_name_model = SubTask.objects.create(task_parent = personal_task, task_name=task_name[eachtask], task_date=datetime.now())
+                        task_name_model.save()
                         return HttpResponse('Success')"""
                 
                 #else:
@@ -395,27 +408,27 @@ class CreateTask(LoginRequiredMixin, View):
             
                 
             else:
-                personal_task = Task.objects.get(personalTaskowner = personal_profile, task_name = taskName, task_description = taskDescription)
+                personal_task = Board.objects.get(personalTaskowner = personal_profile, task_name = taskName, task_description = taskDescription)
            
-                if (subtask_names == '' or subtask_names == [] or len(subtask_names) == 0):
-                    return HttpResponse('Empty subtask')
+                if (task_names == '' or task_names == [] or len(task_names) == 0):
+                    return HttpResponse('Empty task')
                 else:
-                    #subtask_name = subtask_names.split(',')
-                    #print(subtask_name)
-                    for eachsubtask in range(len(subtask_names)):
+                    #task_name = task_names.split(',')
+                    #print(task_name)
+                    for eachtask in range(len(task_names)):
                         #return HttpResponse()
-                        checksubtask_namemodel = SubTask.objects.filter(task_parent = personal_task, subtask_name = subtask_names[eachsubtask]).exists()
-                        if checksubtask_namemodel:
+                        checktask_namemodel = SubTask.objects.filter(task_parent = personal_task, task_name = task_names[eachtask]).exists()
+                        if checktask_namemodel:
                             return HttpResponse("Can't save, exist")
                         else:
-                            for eachsubtask in range(len(subtask_names)):
-                                subtask_name_model = SubTask.objects.create(task_parent = personal_task, subtask_name=subtask_names[eachsubtask], subtask_date=datetime.now())
-                                subtask_name_model.save()
-                            return HttpResponse('Exists, but saved subtask')
+                            for eachtask in range(len(task_names)):
+                                task_name_model = SubTask.objects.create(task_parent = personal_task, task_name=task_names[eachtask], task_date=datetime.now())
+                                task_name_model.save()
+                            return HttpResponse('Exists, but saved task')
                     
             
         else:
-            return HttpResponse("Not create task")
+            return HttpResponse("Not create board")
          
             
 def add_record(request):
@@ -430,66 +443,67 @@ def add_record(request):
         return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-###### Createsubtask view  from the create task button in the html ######
-class CreateSubTask(LoginRequiredMixin, View):
+###### Createtask view  from the create board button in the html ######
+class CreateBoard(LoginRequiredMixin, View):
     login_url = 'login'
     redirect_field_name: 'signup'
     
     def get(self, request):
-        pass
+        return render(request, 'createboard.html')
     
     def post(self, request):
         
         if request.method == 'POST':
             #return HttpResponse(list(request.POST.items()))#, '+', list(request.POST.items()))
             
-            if 'subtaskinput' in request.POST and request.headers.get('x-requested-with') == 'XMLHttpRequest':
+            if 'boardinput' in request.POST and request.headers.get('x-requested-with') == 'XMLHttpRequest':
                 
-                taskName = request.POST['task_name']
-                if (taskName != None):
+                boardName = request.POST['board_name']
+                if (boardName != None):
                     user = request.user.username
                 
-                    taskOwner = request.user.username
-                    taskDescription = request.POST['task_description']
-                    subtask_name = request.POST["subtaskinput"]
+                    boardOwner = request.user.username
+                    boardDescription = request.POST['board_description']
+                    task_name = request.POST["taskinput"]
                     
                     personal_model = User.objects.filter(username = user).first()
                     personal_profile = Profile.objects.get(personal_basicdetails = personal_model)
                     
-                    checkpersonal_task = Task.objects.filter(personalTaskowner = personal_profile, task_name = taskName, task_description = taskDescription).exists()
-                    if checkpersonal_task:
-                        personal_task = Task.objects.get(personalTaskowner = personal_profile, task_name = taskName, task_description = taskDescription)
-                        checkpersonal_subtask = SubTask.objects.filter(task_parent = personal_task, subtask_name = subtask_name).exists()
-                        if checkpersonal_subtask:
-                            messages.info(request, "Sub task for this task already exist!")
-                            return HttpResponse("sub task won't create")
+                    checkpersonal_board = Board.objects.filter(personalBoardowner = personal_profile, board_name = boardName, board_description = boardDescription).exists()
+                    if checkpersonal_board:
+                        personal_board = Board.objects.get(personalBoardowner = personal_profile, board_name = boardName, board_description = boardDescription)
+                        checkpersonal_task = Task.objects.filter(task_parent = personal_task, task_name = task_name).exists()
+                        if checkpersonal_task:
+                            #messages.info(request, "Sub board for this board already exist!")
+                            return HttpResponse("Task won't create")
                         
                         else:
-                            subtask_name_model = SubTask.objects.create(task_parent = personal_task, subtask_name=subtask_name, subtask_date=datetime.now())
-                            subtask_name_model.save()
+                            task_name_model = Task.objects.create(task_parent = personal_task, task_name=task_name, task_date=datetime.now())
+                            task_name_model.save()
                             return HttpResponse('SUB Exists, but saved')
                     else:
-                        task_model = Task.objects.create(personalTaskowner = personal_profile, task_owner = user, task_name = taskName, task_description = taskDescription, task_date = datetime.now())
-                        task_model.save()
+                        board_model = Board.objects.create(personalBoardowner = personal_profile, board_owner = user, board_name = boardName, board_description = boardDescription, board_date = datetime.now())
+                        board_model.save()
                     
-                        #personal_task = Task.objects.filter(personalTaskowner = personal_profile, task_name = taskName, task_description = taskDescription).first()
-                        personal_task = Task.objects.get(personalTaskowner = personal_profile, task_name = taskName, task_description = taskDescription)
-                        subtask_name_model = SubTask.objects.create(task_parent = personal_task, subtask_name=subtask_name, subtask_date=datetime.now())
-                        subtask_name_model.save()
+                        #personal_task = Board.objects.filter(personalTaskowner = personal_profile, task_name = taskName, task_description = taskDescription).first()
+                        personal_task = Board.objects.get(personalBoardowner = personal_profile, board_name = boardName, board_description = boardDescription)
+                        task_name_model = Task.objects.create(task_parent = personal_task, task_name=task_name, task_date=datetime.now())
+                        task_name_model.save()
                         return HttpResponse('Success')
                     
                     '''
-                    personal_task = Task.objects.get(personalTaskowner = personal_profile, task_name = , task_description = )
-                    subtask_name = request.POST["subtaskinput"]
+                    personal_task = Board.objects.get(personalTaskowner = personal_profile, task_name = , task_description = )
+                    task_name = request.POST["taskinput"]
                     
                     
-                    subtask_name_model = SubTask.objects.create(task_parent = personal_task, subtask_name=subtask_name, subtask_date=datetime.now())
-                    subtask_name_model.save()
+                    task_name_model = SubTask.objects.create(task_parent = personal_task, task_name=task_name, task_date=datetime.now())
+                    task_name_model.save()
                     '''
                     #return HttpResponse('Saved')
                     
                 else:
-                    messages.info(request, 'Please enter a task name')
+                    pass
+                    #messages.info(request, 'Please enter a board name')
                 
                 
             
@@ -501,11 +515,11 @@ class CreateSubTask(LoginRequiredMixin, View):
         #task_file
         #task_image
         #task_done
-        #subtask
+        #task
         
         
         
-        task_model = Task.objects.create(personalTaskowner = personal_profile, task_owner = user, task_name = taskName, task_description = taskDescription, task_date = datetime.now())
+        task_model = Board.objects.create(personalTaskowner = personal_profile, task_owner = user, task_name = taskName, task_description = taskDescription, task_date = datetime.now())
         task_model.save()
         
         return HttpResponse('Success')
@@ -526,8 +540,8 @@ class CreateSubTask(LoginRequiredMixin, View):
             #task_file
             #task_image
             #task_done
-            #subtask
-            task_model = Task.objects.create(personalTaskowner = personal_profile, task_owner = user, task_name = taskName, task_description = taskDescription, task_date = datetime.now())
+            #task
+            task_model = Board.objects.create(personalTaskowner = personal_profile, task_owner = user, task_name = taskName, task_description = taskDescription, task_date = datetime.now())
             task_model.save()
             
             return HttpResponse('Success')
@@ -535,3 +549,10 @@ class CreateSubTask(LoginRequiredMixin, View):
             
 def calculator(request):
     return render(request, 'calculator.html')
+
+def createtask(request):
+    return render(request, 'createboard.html')
+
+
+def error_404_view(request, exception):
+    return render(request, '404.html')

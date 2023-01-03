@@ -50,18 +50,18 @@ class Project(models.Model):
 
 
 # Task model
-class Task(models.Model):
-    personalTaskowner = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True, blank=True)
-    businessTaskowner = models.ForeignKey(BusinessProfile, on_delete=models.CASCADE, null=True, blank=True)
-    task_project = models.ForeignKey(Project, on_delete=models.CASCADE, null=True, blank=True)
+class Board(models.Model):
+    personalBoardowner = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True, blank=True)
+    businessBoardowner = models.ForeignKey(BusinessProfile, on_delete=models.CASCADE, null=True, blank=True)
+    board_project = models.ForeignKey(Project, on_delete=models.CASCADE, null=True, blank=True)
     
-    task_owner = models.CharField(max_length = 150)
-    task_name = models.CharField(max_length = 150)
-    task_description = models.TextField(default=None, null=True, blank=True)
-    task_file = models.FileField(default=None, upload_to='task_file_folder', null = True, blank = True)
-    task_image = models.ImageField(default=None, upload_to='task_image_folder', null = True, blank = True)
-    task_done = models.BooleanField(default=False, null = True, blank = True)
-    in_progress = models.BooleanField(default=False, null = True, blank = True)
+    board_owner = models.CharField(max_length = 150)
+    board_name = models.CharField(max_length = 150)
+    board_description = models.TextField(default=None, null=True, blank=True)
+    board_file = models.FileField(default=None, upload_to='task_file_folder', null = True, blank = True)
+    board_image = models.ImageField(default=None, upload_to='task_image_folder', null = True, blank = True)
+    board_completed = models.BooleanField(default=False, null = True, blank = True)
+    board_inprogress = models.BooleanField(default=False, null = True, blank = True)
     #subtask = models.ForeignKey(SubTask, on_delete = models.CASCADE, null = True, blank = True)
     
     '''
@@ -89,10 +89,10 @@ class Task(models.Model):
     task_assignee = models.CharField(max_length=1, choices=for_assignee)
     '''
     
-    task_id = models.UUIDField(default = uuid.uuid4, primary_key=True)
+    board_id = models.UUIDField(default = uuid.uuid4, primary_key=True)
     
-    task_date = models.DateTimeField(auto_now_add=True)
-    task_dateUpdated = models.DateTimeField(auto_now=True)
+    board_date = models.DateTimeField(auto_now_add=True)
+    board_dateUpdated = models.DateTimeField(auto_now=True)
     '''
     User
     group_user
@@ -112,20 +112,22 @@ class Task(models.Model):
     '''
     
     def __str__(self):
-        return self.task_name
+        return self.board_name
     
 
     
-class SubTask(models.Model):
+class Task(models.Model):
     #subTask = models.CharField(max_length=200)
     #businessSubTask = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    task_parent = models.ForeignKey(Task, on_delete = models.CASCADE, null=True, blank = True)
-    subtask_name = models.CharField(max_length=200, null=True, blank=True)
-    subtask_id = models.UUIDField(default = uuid.uuid4, primary_key=True)
-    subtask_done = models.BooleanField(default=False)
-    subtask_date = models.DateField()
+    task_parent = models.ForeignKey(Board, on_delete = models.CASCADE)
+    task_name = models.CharField(max_length=200, null=True, blank=True)
+    task_description = models.TextField()
+    task_assign = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    task_id = models.UUIDField(default = uuid.uuid4, primary_key=True)
+    task_done = models.BooleanField(default=False)
+    task_date = models.DateField()
     
     def __str__(self):
-        return self.subtask_name
+        return self.task_name
     
 

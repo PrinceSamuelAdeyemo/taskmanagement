@@ -1,0 +1,149 @@
+
+
+{% load static %}
+
+
+<!DOCTYPE>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="author" content="Samuel Adeyemo">
+        <meta name="application-name" content="My todo app">
+        <meta name="description" content="A simple to do app">
+        <meta name="keywords" content="todo, app, Simple, task management program">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link rel="stylesheet" href="{% static 'assets/css/bootstrap/css/bootstrap.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/bootstrap-icons-1.3.0/bootstrap-icons.css' %}">
+
+        <link rel="stylesheet" href="{% static 'assets/css/todoapp.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/css/activities.css' %}">
+        
+        <script src="{% static 'assets/css/bootstrap/js/bootstrap.bundle.js' %}"></script>
+        
+        <script src="{% static 'assets/js/jquery.js'%} "></script>
+        <script src="{% static 'assets/js/activity.js'%} "></script>
+
+        
+        
+        <title></title>
+    </head>
+
+    <body>
+        <div class="container-fluid p-0">
+            
+            {% include 'navbar-all.html' %}
+
+            <div class="p-2">
+                <div class="project-n-search w-100">
+                    <div class="row">
+                        <div class="col-6">
+                            <p class="d-md-inline fw-bold">Project</p>
+                        </div>
+                        <div class=" col-6">
+                            <input type="search" class="ms-auto float-end">
+                        </div>
+                    </div>
+                    
+                    
+                </div>
+                <div class="projects row row-cols-6 g-2">
+                    <div class="project p-1">
+                        <div class="project-insight">
+                            <div class="d-block mb-2 bg-primary w-100">
+                                <button class="btn float-end">X</button>
+                            </div>
+                            
+                            <div class="project-details p-1">
+                                <p>Project title</p>
+                                <p>Project description</p>
+                            </div>
+                            <div class="p-1">
+                                <button class="btn btn-info">Open board</button>
+                                <button class="btn btn-info">Edit</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project p-1">
+                        <div class="project-insight">
+                            <div class="d-block mb-2 bg-primary w-100">
+                                <button class="btn float-end">X</button>
+                            </div>
+                            
+                            <div class="project-details p-1">
+                                <p>Project title</p>
+                                <p>Project description</p>
+                            </div>
+                            <div class="p-1">
+                                <button class="btn btn-info">Open board</button>
+                                <button class="btn btn-info">Edit</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project p-1">
+                        <div class="project-insight">
+                            <div class="d-block mb-2 bg-primary w-100">
+                                <button class="btn float-end">X</button>
+                            </div>
+                            
+                            <div class="project-details p-1">
+                                <p>Project title</p>
+                                <p>Project description</p>
+                            </div>
+                            <div class="p-1">
+                                <button class="btn btn-info">Open board</button>
+                                <button class="btn btn-info">Edit</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project p-1">
+                        <div class="project-insight">
+                            <div class="d-block mb-2 bg-primary w-100">
+                                <button class="btn float-end">X</button>
+                            </div>
+                            
+                            <div class="project-details p-1">
+                                <p>Project title</p>
+                                <p>Project description</p>
+                            </div>
+                            <div class="p-1">
+                                <button class="btn btn-info">Open board</button>
+                                <button class="btn btn-info">Edit</button>
+                            </div>
+                       </div>
+                    </div>
+                    <div class="project p-1">
+                        <div class="project-insight">
+                            <div class="d-block mb-2 bg-primary w-100">
+                                <button class="btn float-end">X</button>
+                            </div>
+                            
+                            <div class="project-details p-1">
+                                <p>Project title</p>
+                                <p>Project description</p>
+                            </div>
+                            <div class="p-1">
+                                <button class="btn btn-info">Open board</button>
+                                <button class="btn btn-info">Edit</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                
+                    
+                    <div class="d-inline">
+                        <button class="btn btn-primary" id="create-board">Create a board</button>
+                    </div>
+                </div>
+                
+                
+            </div>
+        </div>
+    </body>
+
+    
+</html>
+
+<div>
+    
+</div>

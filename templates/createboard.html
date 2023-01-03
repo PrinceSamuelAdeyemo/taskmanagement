@@ -1,0 +1,200 @@
+{% load static %}
+
+<!DOCTYPE>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="author" content="Samuel Adeyemo">
+        <meta name="application-name" content="My todo app">
+        <meta name="description" content="A simple to do app">
+        <meta name="keywords" content="todo, app, Simple, task management program">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link rel="stylesheet" href="{% static 'assets/css/bootstrap/css/bootstrap.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/bootstrap-icons-1.3.0/bootstrap-icons.css' %}">
+
+        <link rel="stylesheet" href="{% static 'assets/fontawesome-icons/css/all.css' %}">
+
+        <link rel="stylesheet" href="{% static 'assets/css/todoapp.css' %}">
+        <link rel="stylesheet" href="{% static 'assets/css/createboard.css' %}">
+        
+        <script src="{% static 'assets/js/jquery.js'%} "></script>
+        <script src="{% static 'assets/js/todoapp.js'%} "></script>
+        <script src="{% static 'assets/js/createboard.js'%} "></script>
+
+        
+        
+        <title></title>
+    </head>
+
+    <body>
+        <div class="container-fluid">
+            <button type="button" class="btn cancelproectpage" id="cancelprojectpage"><span><i class="fa fa-angle-left fs-1 text-white bg-dark"></i></span></button>
+
+            <div class="project-panel" id="board-panel">
+
+                <div class="chooseproject">
+                    <div class="">
+                        <p>List is here</p>
+                        <input type="text" class="w-100">
+                        <button type="button" class="btn btn-primary" id="create-a-project">Create a new project</button>
+                        <button type="button" class="btn btn-primary">Choose Project</button>
+                        <button>Assign department</button>
+                        
+                    </div>
+                </div>
+
+                <div class="afterprojectchosen">
+                    <button type="button" class="btn cancelboardpage" id="cancelboardpage"><span><i class="fa fa-angle-left fs-1 text-white bg-dark"></i></span></button>
+                    <div class="forprojectabsolute"> 
+                        {% if user.is_authenticated %}
+                        <form class="form-panel-output" id="form-panel-output" method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="form-panel-output">
+                                <div class="board-panel-output">
+            
+                                    <div class="row m-3">
+                                        <div class="col col-md-7">
+                                            <p class="d-inline">/Create a board</p>
+                                        </div>
+            
+                                        <div class=" col col-md-5 d-inline">
+                                            <label for="#shareprojectprivacy">Public</label>
+                                            
+                                            <div class="form-check form-switch d-inline">
+                                                <input type="checkbox" class="form-check-input custom-switch ccc" id="shareprojectprivacy" role="switch">
+                                            </div>
+                                            <div class="d-inline">
+                                                <button type="button" class="btn"><span><i class="bi bi-link"></i></span></button>
+                                                <button type="button" class="btn"><span><i class="bi bi-camera"></i></span></button>
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+            
+                                    <div class="main-supercreate col-12 bg-green w-100">
+            
+                                        <div class="main-create">
+                                            <h2 class="project_name_inputcon"><input type="text" name="project_name" id="project_name" placeholder="Board Name" class="project_name_input w-100" autofocus required></h2>
+                                            <div class="describeOrPreview">
+                                                <button type="button" class="btn p-1 btn-for-white fw-bold">Description</button>
+                                                <button type="button" class="btn p-1">Preview</button>
+                                            </div>
+                                            <div class="bg-white ee">
+                                                <textarea class="dd w-100" name="project_description" id="project_description" value="" placeholder="Enter Description"></textarea>
+                                                <div class="bg-white">
+                                                    
+                                                    <div id="for-fileinput" class="">
+                                                        <input type="file" class="" id="main-fileinput" multiple>
+                                                        <div id="for-fakefileinput" class="">
+                                                            <button type="button" class="btn"><span><i class="fa fa-link"></i></span></button>
+                                                        </div>
+                                                    </div>
+                                                        <!--<button type="button" class="btn d-inline float-left"><span><i class="bi bi-image"></i></span></button>-->
+            
+                                                    <div id="for-fileinput" class="">
+                                                        <input type="file" class="" id="main-fileinput" accept="image/*" multiple>
+                                                        <div id="for-fakefileinput" class="">
+                                                            <button type="button" class="btn"><span><i class="bi bi-image"></i></span></button>
+                                                        </div>
+                                                    </div>
+                                                    <div id="aaa" class="aaa">
+                                                        <button type="button" class="btn aaa"><span><i class="bi bi-emoji-smile"></i></span></button>
+                                                    </div>
+                                                    
+                                                    
+                                                    <p class="d-inline float-end">Text Formatting</p>
+                                                    
+                                                    <div class="clear"></div>
+                                                </div>
+                                            </div>
+                                            <div class="mt-5">
+                                                <p>TASKS</p>
+                                                <p id="taskerror"></p>
+                                                <div class="m-0">
+                                                    <div class="taskcontainer m-1" id="taskcontainer">
+                                                        <ul class="taskitems" id="taskitems">
+                                                            <!--<li><span><i class="bi bi-list-board"></i></span><input class="mx-1" type="checkbox" id="task">Sub board 1</li>-->
+                                                        </ul>
+                                                        <p class="" id="taskArrayP" hidden></p>
+                                                    </div>
+                                                    
+                                                </div>
+                                                <div class="m-0">
+                                                    <p><input type="text" id="taskinput" class="form-control" placeholder="tasks here..."></p>
+                                                    <button type="button" name="discardtask" id="discardtask" class="btn p-0">Discard</button>
+                                                    <button type="button" name="savetask" id="savetask" class="btn text-success p-0">Save task</button>
+                                                </div>
+                                            </div>
+            
+                                            <div>
+                                                
+                                                <div id="for-fileinput" class="me-4">
+                                                    <input type="file" class="" id="main-fileinput" multiple>
+                                                    <!--
+                                                    <div id="for-fakefileinput" class="">
+                                                        <button type="button" class="btn bg-white px-2 py-1"><span><i class="fa fa-file-export m-1"></i></span>Attachment</button>
+                                                    </div>
+                                                -->
+                                                </div>
+                                                <button type="button" class="btn bg-white px-2 py-1"><span><i class="fa fa-file-export m-1"></i></span>Attachment</button>
+                                                <button type="button" class="btn bg-white px-2 py-1"><span><i class="bi bi-alarm m-1"></i></span>Relationship</button>
+                                                <button type="button" class="btn bg-white px-2 py-1"><span><i class="bi bi-alarm m-1"></i></span>Alert</button>
+                                                <button type="button" class="btn bg-white px-2 py-1"><span><i class="bi bi-three-dots m-2"></i></span>More</button>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                    
+                                </div>
+            
+                                <div class="project-status p-3">
+                                    <div class="project-status_subdiv">
+                                        <div class="">
+                                            <button type="button" class="btn w-100 text-start project-selectionbtn"><span><i class="bi bi-menu-app me-3"></i></span><span class="me-5">Select a project</span><span><i class="bi bi-chevron-right ms-5"></i></span></button>
+                                            
+                                        </div>
+                                        <div class="mt-3">
+                                            <p>ATTRIBUTES</p>
+                                        </div>
+                                        <div>
+                                            <table class="projectTags">
+                                                <tr>
+                                                    <td>Status</td>
+                                                    <td><button type="button" class="btn btn-in-progress" ><span><i class="bi bi-stop-circle-fill me-2"></i></span>In progress</button></td>
+                                                <tr>
+                                                    <td>Priority</td>
+                                                    <td><button type="button" class="btn btn-highpriority" ><span><i class="bi bi-exclamation-circle me-2"></i></span>High</button></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Assignee</td>
+                                                    <td><button type="button" class="btn bg-white whitebtn-border" >Samuel Adeyemo</button></td>
+                                                </tr>
+                                                    <td>Due Date</td>
+                                                    <td><button type="button" class="btn whitebtn-border" >27/11/2022</button></td>
+                                                </tr>
+                                            </table>
+                                            <button type="button" class="btn">+ Add Attribute</button>
+                                        </div>
+            
+                                        <div class="cancelOrCreated w-100">
+                                            <button type="reset" class="bg-danger">Cancel</button>
+                                            <button type="submit" name="create-a-board" id="create-a-board" class="bg-success">+ Create</button>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </form>
+                        {% endif %}
+                        
+                        
+                    
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </body>
+
+</html>

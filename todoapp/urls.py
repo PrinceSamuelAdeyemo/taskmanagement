@@ -23,4 +23,6 @@ urlpatterns = [
     path('', include('mytodoapp.urls')),
 ]
 
+handler404  = 'mytodoapp.views.error_404_view'
+
 urlpatterns = urlpatterns + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

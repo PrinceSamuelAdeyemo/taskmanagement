@@ -47,7 +47,7 @@ jQuery(function($){
             },
             error: function(response){
                 alert('Wrong!')
-                ocation.reload();
+                location.reload();
             },
         });
 
@@ -55,7 +55,7 @@ jQuery(function($){
         
     };
 
-    setInterval(getTask, 100);
+    setInterval(getTask, 100000000);
 
 
 var xArray = ["", "Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"];

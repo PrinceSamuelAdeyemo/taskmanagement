@@ -1,0 +1,17 @@
+.projects{
+    margin-top: 5rem;
+}
+
+.project{
+    border-radius: 1rem;
+}
+
+.project-insight{
+    background-color: blueviolet;
+    border: 2px solid grey;
+    border-radius: 1rem;
+}
+
+.project-details{
+    margin-top: 1.5rem;
+}
