@@ -8,13 +8,39 @@ from django.views import View
 from django.http import HttpResponse, JsonResponse
 
 from django.contrib import messages
-from datetime import datetime
 
 from .models import Profile, BusinessProfile, Project, Board, Task
 import json
 # Create your views here.
 
 
+
+##### Authenticating users ########
+class AuththeUser(View):
+    def get(self, request):
+        if (request.headers.get('x-requested-with') == 'XMLHttpRequest'):
+            if request.user.is_authenticated:
+                #visitor = request.user.username
+                context = {"user": "is_authenticated"}
+                return JsonResponse(context)
+                #contex = JsonResponse({'user': 'is_authenticated'})
+                #return HttpResponse('Authenticated')
+                #return render(request, 'dashboard.html')
+                #return HttpResponse(f"{visitor}")
+                
+            else:
+                context = {'user': 'is_not_authenticated'}
+                return JsonResponse(context)
+                #context = JsonResponse({
+                #   'user': 'is_not_authenticated'
+                #   })
+                #return render(request, 'login.html', context)
+                #return HttpResponse('Response is None')
+        else:
+            return HttpResponse('Ajax is not responding for this Auth User function')
+    
+    def post(self, request):
+        pass
 
 ###### Sign up view ######
 class Signup(View):
@@ -265,8 +291,34 @@ def getActivities(request):
 def calendar(request):
     return render(request, 'calendar.html')
 
-def activities(request):
-    return render(request, 'boards.html')
+
+class Activities(LoginRequiredMixin, View):
+    login_url = 'login'
+    redirect_field_name = 'login'
+    
+    def get(self, request):
+        
+        if (request.headers.get('x-requested-with') == 'XMLHttpRequest'):
+            return render(request, 'boards.html')
+            owner = request.user.username
+            projects =  Project.objects.filter(project_owner = owner)
+            boards = Board.objects.filter(board_owner = owner)
+            
+            context = {'totalprojects': list(projects.values()),
+                       'totalboards': list(boards.values),
+                       }
+            return render(request, 'boards.html')#, context)
+        else:
+            return HttpResponse("Activities from ajax won't show")
+        
+    def post(self, request):
+        if (request.headers.get('x-requested-with') == 'XMLHttpRequest'):
+            return render(request, 'boards.html')
+        
+    
+
+#def activities(request):
+#    return render(request, 'boards.html')
 
 @login_required(login_url = "login")
 def settings(request):
@@ -279,7 +331,7 @@ class DashBoard(LoginRequiredMixin, View):
     login_url = 'login'
     redirect_field_name: 'signup'
     def get(self, request):
-        if request.method == 'GET':# and request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        if request.method == 'GET' and request.headers.get('x-requested-with') == 'XMLHttpRequest':
             boardOwner = request.user.username
             user_model = User.objects.get(username = boardOwner)
             activities = Board.objects.all()
@@ -319,20 +371,20 @@ class DashBoard(LoginRequiredMixin, View):
                 
         else:
             return HttpResponse("Ajax not responding")
-
-
     
     def post(self, request):
         
         #if 'createtask' in request.POST:
-        if request.method == 'POST' and request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        if (request.headers.get('x-requested-with') == 'XMLHttpRequest'):
+            pass
+            #return HttpResponse(request.headers)
             '''
             if 'None':
                 return HttpResponse('Response is None')
             else:
                 return HttpResponse('Response is Not none')
             #return HttpResponse("Sent")
-            '''
+            
             # Get the user and board details from the front end.
             user = request.user.username
             
@@ -341,7 +393,7 @@ class DashBoard(LoginRequiredMixin, View):
             
             taskDescription = request.POST['task_description']
             
-            task_names = request.POST.getlist("subTaskArray[]")
+            task_names = request.POST.getlist("TaskArray[]")
             #task_names = json.loads(request.)
             
             #print(alltask_names)
@@ -364,7 +416,7 @@ class DashBoard(LoginRequiredMixin, View):
             
             checkpersonal_task = Board.objects.filter(personalTaskowner = personal_profile, task_name = taskName, task_description = taskDescription).exists()
             if not checkpersonal_task:
-                task_model = Board.objects.create(personalTaskowner = personal_profile, task_owner = user, task_name = taskName, task_description = taskDescription, task_date = datetime.now())
+                task_model = Board.objects.create(personalTaskowner = personal_profile, task_owner = user, task_name = taskName, task_description = taskDescription)
                 task_model.save()
                 
                 #if task_model.save() == True:
@@ -383,29 +435,14 @@ class DashBoard(LoginRequiredMixin, View):
                     #print(task_name)
                     for eachtask in range(len(task_names)):
                         #return HttpResponse()
-                        checktask_namemodel = SubTask.objects.filter(task_parent = personal_task, task_name = task_names[eachtask]).exists()
+                        checktask_namemodel = Task.objects.filter(task_parent = personal_task, task_name = task_names[eachtask]).exists()
                         if checktask_namemodel:
                             return HttpResponse("Can't save, exist")
                         else:
                             for eachtask in range(len(task_names)):
-                                task_name_model = SubTask.objects.create(task_parent = personal_task, task_name=task_names[eachtask], task_date=datetime.now())
+                                task_name_model = Task.objects.create(task_parent = personal_task, task_name=task_names[eachtask])
                                 task_name_model.save()
                             return HttpResponse('Exists, but saved task')
-                        
-                """else:
-                    personal_task = Board.objects.get_or_create(personalTaskowner = personal_profile, task_owner = user, task_name = taskName, task_description = taskDescription)
-
-                    checktask_namemodel = SubTask.objects.filter(task_parent = personal_task, task_name = task_name[eachtask]).exists()
-                    if checktask_namemodel:
-                        return HttpResponse("Can't save, no")
-                    else:
-                        task_name_model = SubTask.objects.create(task_parent = personal_task, task_name=task_name[eachtask], task_date=datetime.now())
-                        task_name_model.save()
-                        return HttpResponse('Success')"""
-                
-                #else:
-                #    return HttpResponse('Did not save.')
-            
                 
             else:
                 personal_task = Board.objects.get(personalTaskowner = personal_profile, task_name = taskName, task_description = taskDescription)
@@ -417,20 +454,20 @@ class DashBoard(LoginRequiredMixin, View):
                     #print(task_name)
                     for eachtask in range(len(task_names)):
                         #return HttpResponse()
-                        checktask_namemodel = SubTask.objects.filter(task_parent = personal_task, task_name = task_names[eachtask]).exists()
+                        checktask_namemodel = Task.objects.filter(task_parent = personal_task, task_name = task_names[eachtask]).exists()
                         if checktask_namemodel:
                             return HttpResponse("Can't save, exist")
                         else:
                             for eachtask in range(len(task_names)):
-                                task_name_model = SubTask.objects.create(task_parent = personal_task, task_name=task_names[eachtask], task_date=datetime.now())
+                                task_name_model = Task.objects.create(task_parent = personal_task, task_name=task_names[eachtask])
                                 task_name_model.save()
                             return HttpResponse('Exists, but saved task')
                     
             
         else:
-            return HttpResponse("Not create board")
+            return HttpResponse("Not create board")'''
          
-            
+'''            
 def add_record(request):
     data = {
         "title": request.POST.get('title', None),
@@ -441,118 +478,139 @@ def add_record(request):
         return Response(data=serializer.data, status=status.HTTP_201_CREATED)
     else:
         return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+'''
 
 
-###### Createtask view  from the create board button in the html ######
-class CreateBoard(LoginRequiredMixin, View):
+###### CreateProject view  from the create project button in the html ######
+class CreateProject(LoginRequiredMixin, View):
     login_url = 'login'
-    redirect_field_name: 'signup'
+    redirect_field_name: 'login'
     
     def get(self, request):
         return render(request, 'createboard.html')
     
     def post(self, request):
         
-        if request.method == 'POST':
-            #return HttpResponse(list(request.POST.items()))#, '+', list(request.POST.items()))
+        ################################################
+        # Receive the project details
+        if (request.headers.get('X-Requested-With') == 'XMLHttpRequest') and (request.POST['action'] == "create-a-project"): 
+            projectOwner = request.user.username
+            projectName = request.POST['project_name']
+            projectDescription = 'Default'
+            #task_name = request.POST["taskinput"]
+            # Receive the board details
+            #boardName = request.POST['board_name']
+            #  Receive the task details
+            ################################################
+            # Working on the details provided
             
-            if 'boardinput' in request.POST and request.headers.get('x-requested-with') == 'XMLHttpRequest':
-                
-                boardName = request.POST['board_name']
-                if (boardName != None):
-                    user = request.user.username
-                
-                    boardOwner = request.user.username
-                    boardDescription = request.POST['board_description']
-                    task_name = request.POST["taskinput"]
-                    
-                    personal_model = User.objects.filter(username = user).first()
-                    personal_profile = Profile.objects.get(personal_basicdetails = personal_model)
-                    
-                    checkpersonal_board = Board.objects.filter(personalBoardowner = personal_profile, board_name = boardName, board_description = boardDescription).exists()
-                    if checkpersonal_board:
-                        personal_board = Board.objects.get(personalBoardowner = personal_profile, board_name = boardName, board_description = boardDescription)
-                        checkpersonal_task = Task.objects.filter(task_parent = personal_task, task_name = task_name).exists()
-                        if checkpersonal_task:
-                            #messages.info(request, "Sub board for this board already exist!")
-                            return HttpResponse("Task won't create")
-                        
-                        else:
-                            task_name_model = Task.objects.create(task_parent = personal_task, task_name=task_name, task_date=datetime.now())
-                            task_name_model.save()
-                            return HttpResponse('SUB Exists, but saved')
-                    else:
-                        board_model = Board.objects.create(personalBoardowner = personal_profile, board_owner = user, board_name = boardName, board_description = boardDescription, board_date = datetime.now())
-                        board_model.save()
-                    
-                        #personal_task = Board.objects.filter(personalTaskowner = personal_profile, task_name = taskName, task_description = taskDescription).first()
-                        personal_task = Board.objects.get(personalBoardowner = personal_profile, board_name = boardName, board_description = boardDescription)
-                        task_name_model = Task.objects.create(task_parent = personal_task, task_name=task_name, task_date=datetime.now())
-                        task_name_model.save()
-                        return HttpResponse('Success')
-                    
-                    '''
-                    personal_task = Board.objects.get(personalTaskowner = personal_profile, task_name = , task_description = )
-                    task_name = request.POST["taskinput"]
-                    
-                    
-                    task_name_model = SubTask.objects.create(task_parent = personal_task, task_name=task_name, task_date=datetime.now())
-                    task_name_model.save()
-                    '''
-                    #return HttpResponse('Saved')
-                    
-                else:
-                    pass
-                    #messages.info(request, 'Please enter a board name')
-                
-                
+            personal_model = User.objects.filter(username = projectOwner).first()
+            personal_profile = Profile.objects.get(personal_basicdetails = personal_model)
             
+            checkpersonal_project = Project.objects.filter(personalProjectowner = personal_profile, project_name = projectName).exists()
+            
+            if checkpersonal_project:
+                return HttpResponse("This project already exist")
+                #personal_project = Project.objects.get(personalProjectowner = personal_profile, project_name = projectName, project_description = projectDescription)
+                
+        
             else:
-                return HttpResponse('It is not there')
+                project_model = Project.objects.create(personalProjectowner = personal_profile, project_owner = projectOwner, project_name = projectName, project_description = projectDescription)
+                project_model.save()
+                return HttpResponse("This project has been saved.")
             
+                    
+                #personal_board = Board.objects.get(personalBoardowner = personal_profile, board_name = boardName, board_description = boardDescription)
+                #personal_board = Board.objects.create(board_name, board_project, board_description)
+                #personal_board.save()
+                
+                #task_name_model = Task.objects.create(task_parent = personal_board, task_name=task_name)
+                #task_name_model.save()
+                
+                #return HttpResponse('Success')
+                
+            # else:
+                #  pass
+                #messages.info(request, 'Please enter a board name')
+            
+            
+
+
+###### CreateBoard view  from the create board button in the html ######
+class CreateBoard(LoginRequiredMixin, View):
+    login_url = 'login'
+    redirect_field_name: 'login'
+    
+    def get(self, request):
+        return render(request, 'createboard.html')
+    
+    def post(self, request):
         
-        '''
-        #task_file
-        #task_image
-        #task_done
-        #task
-        
-        
-        
-        task_model = Board.objects.create(personalTaskowner = personal_profile, task_owner = user, task_name = taskName, task_description = taskDescription, task_date = datetime.now())
-        task_model.save()
-        
-        return HttpResponse('Success')
-        '''
-        
-        '''
+        if (request.headers.get('X-Requested-With') == 'XMLHttpRequest') and (request.POST['action'] == "create-a-board"):
+            
+            ################################################
+            #Receive the project details
+            projectName = request.POST['project_name']
+            #projectDescription = 'Default'
+            
+            # Receive the board details
+            boardOwner = request.user.username
+            boardName = request.POST['board_name']
+            boardDescription = request.POST['board_description']
+            
+            ################################################
+            # Receive the task details
+            task_names = request.POST.getlist("TaskArray[]")
+            
+            ##### Get if the board exist, and then create if it doesn't exist ########
+            # Check if the board name received already exists.
+            # If it does not exists, create the board and save it.
+            # After the save, get the board which was saved and check if if the sub board was added, if it wasn't. Don't save any task, but if the sub board was added.
+            #  Check if the sub board exists for the partcular board, if not, Save the tasks also.
+            personal_model = User.objects.filter(username = boardOwner).first()
+            personal_profile = Profile.objects.get(personal_basicdetails = personal_model)
+            
+            checkpersonal_board = Board.objects.filter(personalBoardowner = personal_profile, board_name = boardName, board_description = boardDescription).exists()
+            if not checkpersonal_board:
+                
+                personal_board = Board.objects.create(personalBoardowner = personal_profile, board_name = boardName, board_description = boardDescription)
+                personal_board.save()
+                if (task_names == ''):
+                    return HttpResponse('The board task is empty!')
+                else:                
+                    for eachtask in range(len(task_names)):
+                        personal_task = Board.objects.get(personalBoardowner = personal_profile, board_name = boardName, board_description = boardDescription)
+                        checktask_namemodel = Task.objects.filter(task_parent = personal_task, task_name = task_names[eachtask]).exists()
+                        if checktask_namemodel:
+                            return HttpResponse("Can't save, exist")
+                        else:
+                            task_name_model = Task.objects.create(task_parent = personal_task, task_name=task_names[eachtask])
+                            task_name_model.save()
+                    return HttpResponse('Board Exists, but saved task')
+                    
+            else:
+                return HttpResponse('The board name already exists')
+            
+        else:
+            return HttpResponse('It is not there')
         if "None":
             return HttpResponse('It is None')
         else:
-            
-            #name = request.POST['task_nam']
-            #des = request.POST['task_descriptio']
             user = request.user.username
-                
             taskOwner = request.user.username
             taskName = request.POST['task_name']
             taskDescription = request.POST['task_description']
-            #task_file
-            #task_image
-            #task_done
-            #task
-            task_model = Board.objects.create(personalTaskowner = personal_profile, task_owner = user, task_name = taskName, task_description = taskDescription, task_date = datetime.now())
+            task_model = Board.objects.create(personalTaskowner = personal_profile, task_owner = user, task_name = taskName, task_description = taskDescription)
             task_model.save()
             
             return HttpResponse('Success')
-            '''
+        
             
 def calculator(request):
     return render(request, 'calculator.html')
 
 def createtask(request):
     return render(request, 'createboard.html')
-
 
 def error_404_view(request, exception):
     return render(request, '404.html')

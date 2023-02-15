@@ -17,9 +17,11 @@
 
         <link rel="stylesheet" href="{% static 'assets/css/todoapp.css' %}">
         <link rel="stylesheet" href="{% static 'assets/css/createboard.css' %}">
+
+        <script src="{% static 'assets/css/bootstrap/js/bootstrap.bundle.js' %}"></script>
         
         <script src="{% static 'assets/js/jquery.js'%} "></script>
-        <script src="{% static 'assets/js/todoapp.js'%} "></script>
+        <!--<script src="{% static 'assets/js/todoapp.js'%} "></script>-->
         <script src="{% static 'assets/js/createboard.js'%} "></script>
 
         
@@ -29,33 +31,146 @@
 
     <body>
         <div class="container-fluid">
-            <button type="button" class="btn cancelproectpage" id="cancelprojectpage"><span><i class="fa fa-angle-left fs-1 text-white bg-dark"></i></span></button>
 
-            <div class="project-panel" id="board-panel">
+            <div class="project-panel" id="project-panel">
 
                 <div class="chooseproject">
+                    <button type="button" class="btn cancelprojectpage" id="cancelprojectpage"><span><i class="fa fa-angle-left fs-1 text-white bg-dark"></i></span></button>
                     <div class="">
                         <p>List is here</p>
-                        <input type="text" class="w-100">
+                        <input type="text" class="w-100" id="projectname" >
                         <button type="button" class="btn btn-primary" id="create-a-project">Create a new project</button>
-                        <button type="button" class="btn btn-primary">Choose Project</button>
-                        <button>Assign department</button>
+                        
+                        <div class="dropdown d-inline">
+                            <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" id="choosefromproject">Choose Project</button>
+                            <ul class="dropdown-menu" aria-labelledby="choosefromproject">
+                                <li role="presentation" class="w-100">
+                                    <a href="" role="menu-item" class="dropdown-item w-100">Hi</a>
+                                </li>
+                                <li role="presentation" class="w-100">
+                                    <a href="" role="menu-item" class="dropdown-item w-100">Hello</a>
+                                </li>
+                                <li role="presentation" class="w-100">
+                                    <a href="" role="menu-item" class="dropdown-item w-100">Hi</a>
+                                </li>
+                                <li role="presentation" class="w-100">
+                                    <a href="" role="menu-item" class="dropdown-item w-100">Hello</a>
+                                </li>
+                                <li role="presentation" class="w-100">
+                                    <a href="" role="menu-item" class="dropdown-item w-100">Hi</a>
+                                </li>
+                                <li role="presentation" class="w-100">
+                                    <a href="" role="menu-item" class="dropdown-item w-100">Hello</a>
+                                </li>
+                                <li role="presentation" class="w-100">
+                                    <a href="" role="menu-item" class="dropdown-item w-100">Hi</a>
+                                </li>
+                                <li role="presentation" class="w-100">
+                                    <a href="" role="menu-item" class="dropdown-item w-100">Hello</a>
+                                </li>
+                                <li role="presentation" class="w-100">
+                                    <a href="" role="menu-item" class="dropdown-item w-100">Hi</a>
+                                </li>
+                                <li role="presentation" class="w-100">
+                                    <a href="" role="menu-item" class="dropdown-item w-100">Hello</a>
+                                </li>
+                                <li role="presentation" class="w-100">
+                                    <a href="" role="menu-item" class="dropdown-item w-100">Hi</a>
+                                </li>
+                                <li role="presentation" class="w-100">
+                                    <a href="" role="menu-item" class="dropdown-item w-100">Hello</a>
+                                </li>
+                                <li role="presentation" class="w-100">
+                                    <a href="" role="menu-item" class="dropdown-item w-100">Hi</a>
+                                </li>
+                                <li role="presentation" class="w-100">
+                                    <a href="" role="menu-item" class="dropdown-item w-100">Hello</a>
+                                </li>
+                                <li role="presentation" class="w-100">
+                                    <a href="" role="menu-item" class="dropdown-item w-100">Hi</a>
+                                </li>
+                                <li role="presentation" class="w-100">
+                                    <a href="" role="menu-item" class="dropdown-item w-100">Hello</a>
+                                </li>
+                                <li role="presentation" class="w-100">
+                                    <a href="" role="menu-item" class="dropdown-item w-100">Hi</a>
+                                </li>
+                                <li role="presentation" class="w-100">
+                                    <a href="" role="menu-item" class="dropdown-item w-100">Hello</a>
+                                </li>
+                                <li role="presentation" class="w-100">
+                                    <a href="" role="menu-item" class="dropdown-item w-100">Hi</a>
+                                </li>
+                                <li role="presentation" class="w-100">
+                                    <a href="" role="menu-item" class="dropdown-item w-100">Hello</a>
+                                </li>
+                                <li role="presentation" class="w-100">
+                                    <a href="" role="menu-item" class="dropdown-item w-100">Hi</a>
+                                </li>
+                                <li role="presentation" class="w-100">
+                                    <a href="" role="menu-item" class="dropdown-item w-100">Hello</a>
+                                </li>
+                                <li role="presentation" class="w-100">
+                                    <a href="" role="menu-item" class="dropdown-item w-100">Hi</a>
+                                </li>
+                                <li role="presentation" class="w-100">
+                                    <a href="" role="menu-item" class="dropdown-item w-100">Hello</a>
+                                </li>
+                                <li role="presentation" class="w-100">
+                                    <a href="" role="menu-item" class="dropdown-item w-100">Hi</a>
+                                </li>
+                                <li role="presentation" class="w-100">
+                                    <a href="" role="menu-item" class="dropdown-item w-100">Hello</a>
+                                </li>
+                                <li role="presentation" class="w-100">
+                                    <a href="" role="menu-item" class="dropdown-item w-100">Hi</a>
+                                </li>
+                                <li role="presentation" class="w-100">
+                                    <a href="" role="menu-item" class="dropdown-item w-100">Hello</a>
+                                </li>
+                                <li role="presentation" class="w-100">
+                                    <a href="" role="menu-item" class="dropdown-item w-100">Hi</a>
+                                </li>
+                                <li role="presentation" class="w-100">
+                                    <a href="" role="menu-item" class="dropdown-item w-100">Hello</a>
+                                </li>
+                                <li role="presentation" class="w-100">
+                                    <a href="" role="menu-item" class="dropdown-item w-100">Hi</a>
+                                </li>
+                                <li role="presentation" class="w-100">
+                                    <a href="" role="menu-item" class="dropdown-item w-100">Hello</a>
+                                </li>
+
+                            </ul>
+                        </div>
+                        <div class="dropdown d-inline">
+                            <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" id="assigndepartmentbutton">Assign department</button>
+                            <ul class="dropdown-menu" aria-labelledby="assigndepartmentbutton">
+                                <li role="presentation" class="w-100">
+                                    <a href="" role="menu-item" class="dropdown-item w-100">Hi</a>
+                                </li>
+                                <li role="presentation" class="w-100">
+                                    <a href="" role="menu-item" class="dropdown-item w-100">Hello</a>
+                                </li>
+                            </ul>
+                        </div>
                         
                     </div>
                 </div>
 
                 <div class="afterprojectchosen">
-                    <button type="button" class="btn cancelboardpage" id="cancelboardpage"><span><i class="fa fa-angle-left fs-1 text-white bg-dark"></i></span></button>
                     <div class="forprojectabsolute"> 
+                        <button type="button" class="btn cancelboardpage" id="cancelboardpage"><span><i class="fa fa-angle-left fs-1 text-white bg-dark"></i></span></button>
+
                         {% if user.is_authenticated %}
-                        <form class="form-panel-output" id="form-panel-output" method="POST" enctype="multipart/form-data">
+                        <form class="form-panel-output" name="form-panel-ouput" id="form-panel-output" method="POST" enctype="multipart/form-data">
                             {% csrf_token %}
-                            <div class="form-panel-output">
+                            <div class="form-panel-outputdiv">
                                 <div class="board-panel-output">
             
                                     <div class="row m-3">
                                         <div class="col col-md-7">
-                                            <p class="d-inline">/Create a board</p>
+                                            <p class="d-inline"><span class="fw-bold" id="project-name"></span>/Create a board</p>
                                         </div>
             
                                         <div class=" col col-md-5 d-inline">
@@ -75,13 +190,13 @@
                                     <div class="main-supercreate col-12 bg-green w-100">
             
                                         <div class="main-create">
-                                            <h2 class="project_name_inputcon"><input type="text" name="project_name" id="project_name" placeholder="Board Name" class="project_name_input w-100" autofocus required></h2>
+                                            <h2 class="board_name_inputcon"><input type="text" name="board_name" id="board_name" placeholder="Board Name" class="board_name_input w-100" autofocus required></h2>
                                             <div class="describeOrPreview">
                                                 <button type="button" class="btn p-1 btn-for-white fw-bold">Description</button>
                                                 <button type="button" class="btn p-1">Preview</button>
                                             </div>
                                             <div class="bg-white ee">
-                                                <textarea class="dd w-100" name="project_description" id="project_description" value="" placeholder="Enter Description"></textarea>
+                                                <textarea class="dd w-100" name="board_description" id="board_description" value="" placeholder="Enter Description"></textarea>
                                                 <div class="bg-white">
                                                     
                                                     <div id="for-fileinput" class="">
@@ -110,7 +225,7 @@
                                             </div>
                                             <div class="mt-5">
                                                 <p>TASKS</p>
-                                                <p id="taskerror"></p>
+                                                <p><b id="taskerror"></b></p>
                                                 <div class="m-0">
                                                     <div class="taskcontainer m-1" id="taskcontainer">
                                                         <ul class="taskitems" id="taskitems">
@@ -150,10 +265,18 @@
             
                                 <div class="project-status p-3">
                                     <div class="project-status_subdiv">
-                                        <div class="">
-                                            <button type="button" class="btn w-100 text-start project-selectionbtn"><span><i class="bi bi-menu-app me-3"></i></span><span class="me-5">Select a project</span><span><i class="bi bi-chevron-right ms-5"></i></span></button>
-                                            
+                                        <div class="dropdown">
+                                            <button type="button" class="btn w-100 text-start project-selectionbtn dropdown-toggle" data-bs-toggle="dropdown" id="projectlist"><span><i class="bi bi-chevron-right me-5"></i></span><span><i class="bi bi-menu-app me-3"></i></span><span class="me-5">Select a project</span></button>
+                                            <ul class="dropdown-menu" aria-labelledby="projectlist">
+                                                <li role="presentation" class="w-100">
+                                                    <a href="" role="menu-item" class="dropdown-item w-100">Hi</a>
+                                                </li>
+                                                <li role="presentation" class="w-100">
+                                                    <a href="" role="menu-item" class="dropdown-item w-100">Hello</a>
+                                                </li>
+                                            </ul>
                                         </div>
+
                                         <div class="mt-3">
                                             <p>ATTRIBUTES</p>
                                         </div>
@@ -161,10 +284,38 @@
                                             <table class="projectTags">
                                                 <tr>
                                                     <td>Status</td>
-                                                    <td><button type="button" class="btn btn-in-progress" ><span><i class="bi bi-stop-circle-fill me-2"></i></span>In progress</button></td>
+                                                    <td>
+                                                        <div class="dropdown">
+                                                            <button type="button" class="btn btn-in-progress dropdown-toggle" data-bs-toggle="dropdown" id="progress-status"><span><i class="bi bi-stop-circle-fill me-2"></i></span>Not yet started</button>
+                                                            <ul class="dropdown-menu" aria-labelledby="progress-status">
+                                                                <li role="presentation" class="w-100">
+                                                                    <button type="button" class="btn btn-in-progress"><span><i class="bi bi-stop-circle-fill me-2"></i></span>In progress</button>                                                                    <!--<a href="" role="menu-item" class="dropdown-item w-100">Hi</a>-->
+                                                                </li>
+                                                                <li role="presentation" class="w-100">
+                                                                    <button type="button" class="btn btn-in-progress"><span><i class="bi bi-stop-circle-fill me-2"></i></span>Completed</button>                                                                    <!--<a href="" role="menu-item" class="dropdown-item w-100">Hello</a>-->
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                        <!--<button type="button" class="btn btn-in-progress" ><span><i class="bi bi-stop-circle-fill me-2"></i></span>In progress</button>-->
+                                                    </td>
                                                 <tr>
                                                     <td>Priority</td>
-                                                    <td><button type="button" class="btn btn-highpriority" ><span><i class="bi bi-exclamation-circle me-2"></i></span>High</button></td>
+                                                    <td>
+                                                        
+                                                        <div class="dropdown d-inline">
+                                                            <button type="button" class="btn btn-lowpriority dropdown-toggle" data-bs-toggle="dropdown" id="priority-value"><span><i class="bi bi-exclamation-circle me-2"></i></span>Low</button>
+                                                            <ul class="dropdown-menu" aria-labelledby="priority-value">
+                                                                <li role="presentation" class="w-100">
+                                                                    <button type="button" class="btn btn-mediumpriority"><span><i class="bi bi-exclamation-circle me-2"></i></span>Medium</button>
+                                                                    <!--<a href="" role="menu-item" class="dropdown-item w-100">Hi</a>-->
+                                                                </li>
+                                                                <li role="presentation" class="w-100">
+                                                                    <!--<a href="" role="menu-item" class="dropdown-item w-100">Hello</a>-->
+                                                                    <button type="button" class="btn btn-highpriority"><span><i class="bi bi-exclamation-circle me-2"></i></span>High</button>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </td>
                                                 </tr>
                                                 <tr>
                                                     <td>Assignee</td>
@@ -179,11 +330,16 @@
             
                                         <div class="cancelOrCreated w-100">
                                             <button type="reset" class="bg-danger">Cancel</button>
-                                            <button type="submit" name="create-a-board" id="create-a-board" class="bg-success">+ Create</button>
+                                            <button type="button" name="create-a-board" id="create-a-board" class="bg-success">+ Create</button>
                                         </div>
                                     </div>
                                     
                                 </div>
+
+                                <div class="clear py-5">
+
+                                </div>
+
                             </div>
                         </form>
                         {% endif %}

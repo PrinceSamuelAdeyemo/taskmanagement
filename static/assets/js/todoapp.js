@@ -58,6 +58,38 @@ jQuery(function($){
     setInterval(getTask, 100000000);
 
 
+    var getProjects = () => {
+            window.location.href = '/activities';
+    };
+
+    $('#projectpage').on('click', function(){
+        $.ajax({
+            type: 'GET',
+            url: '/authuser',
+            success: function(response){
+                if (response.user === 'is_not_authenticated'){
+                    window.location.href = '/login';
+                    console.log('Not logged in');
+                    
+                }
+                else if (response.user === 'is_authenticated'){
+                    window.location.href = '/activities';
+                    console.log('Logged in');
+                }
+                else{
+                    alert('Not receiving a valid response');
+                    console.log(response);
+                }
+                
+            },
+            error: function(response){
+                console.log('Not responding');
+                console.log(response);
+            }
+        })
+    });
+
+
 var xArray = ["", "Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"];
 var yArray = [3,7,8,8,9,9,9,10,];
 //console.log(yArray.length)
@@ -78,9 +110,9 @@ var layout = {
 xaxis: {range: [], title: ""},
 yaxis: {range: [5, 16], title: ""},
 title: "",
-plot_bgcolor: '#2c405b',
-//paper_bgcolor: 'red',
-paper_bgcolor: '#2c405b',
+plot_bgcolor: 'rgba(33, 101, 156, 0.854)',
+//paper_bgcolor: '#2c405b',
+paper_bgcolor: 'rgba(33, 101, 156, 0.854)',
 font: {
     color: 'gray',
     family: 'Open Sans',

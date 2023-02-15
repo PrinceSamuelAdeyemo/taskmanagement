@@ -26,5 +26,25 @@ jQuery(function($){
 */
 
 jQuery(function($){
+    $(document).on('load', function(event){
+        event.preventDefault();
+
+        $.ajax({
+            type: GET,
+            url: '/activities',
+            
+            success: function(data){
+                $('#totalproject-count').text(`Projects (${totalprojects.length})`)
+                alert("Received");
+            },
+            error: function(data){
+                alert('Not Received');
+            },
+
+        })
+        .done(function(){
+            window.location.href = '/activities'
+        })
+        })
     
 })

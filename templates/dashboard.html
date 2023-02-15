@@ -18,7 +18,7 @@
 
         <link rel="stylesheet" href="{% static 'assets/css/todoapp.css' %}">
         <link rel="stylesheet" href="{% static 'assets/css/activity.css' %}">
-        <link rel="stylesheet" href="{% static 'assets/css/create-task.css' %}">        
+        <link rel="stylesheet" href="{% static 'assets/css/activities.css' %}">        
         
         
         <title></title>
@@ -36,7 +36,7 @@
                         <ul class="nav nav-pills flex-column navigating-bars h-100">
                             <li class="nav-item w-100 mt-4"><a href="/" class="btn nav-link text-start grey-link w-100 turnsyellow"><i class="fa fa-table me-4"></i><span class=" turnsviolet">Dashboard<span></a></li>
                             <li class="nav-item w-100 mt-4"><a type="button" class="btn nav-link text-start grey-link w-100 turnsyellow" id="activitypagebutton"><i class="fa fa-people-group me-4"></i><span class=" turnsviolet">Team</span></a></li>
-                            <li class="nav-item w-100 mt-4"><a type="button" class="btn nav-link text-start grey-link w-100 turnsyellow" id="activitypagebutton"><i class="fa fa-diagram-project me-4"></i><span class=" turnsviolet">Projects</span></a></li>
+                            <li class="nav-item w-100 mt-4"><a type="button" class="btn nav-link text-start grey-link w-100 turnsyellow" id="projectpage"><i class="fa fa-diagram-project me-4"></i><span class=" turnsviolet">Projects</span></a></li>
                             <li class="nav-item w-100 mt-4"><a href="" class="btn nav-link text-start grey-link w-100 turnsyellow"><i class="bi bi-list-task me-4"></i><span class=" turnsviolet">Project Plan</span></a></li>
                             <li class="nav-item w-100 mt-4"><a href="" class="btn nav-link text-start grey-link w-100 turnsyellow"><i class="bi bi-chat me-4"></i><span class=" turnsviolet">Messages</span></a></li>
                             
@@ -61,7 +61,7 @@
                             <div class="uppernavs col-6 w-50">
                                 
                                 <div class="uppernav w-75 px-4">
-                                    <button type="button" class="btn btn-warning create-new-project little-dark-bold" id="create-project">+ New Project</button>
+                                    <button type="button" class="btn btn-warning create-new-project little-dark-bold" id="openProjectPage">+ New Project</button>
                                     <button type="button" class="notifications"><i class="bi bi-bell"></i></button>
                                     
                                     <img class="profile-image" src="{% static 'assets/the houses/AvatarMaker_1.png' %}" alt="">
@@ -77,7 +77,7 @@
                                         <button type="button" class="btn fs-4 p-0 ms-4"><i class="bi bi-calendar-fill icon-turnsyellow"></i></button>
                                     </div>
                                     <div class="col-6">
-                                        <p class="little-white-bold d-inline" id="taskCompleted">Task</p>
+                                        <p class="little-white-bold d-inline" id="boardCompleted">Board</p>
                                         <p class="grey-text">Completed</p>
                                     </div>
                                     <div class="col-4">
@@ -94,7 +94,7 @@
                                     <div class="col-6">
                                         
                                         
-                                        <p class="little-white-bold d-inline" id="taskInProgress">Task</p>
+                                        <p class="little-white-bold d-inline" id="boardInProgress">Board</p>
                                         
                                         <p class="grey-text">In Progress</p>
                                         
@@ -466,7 +466,7 @@
     <script src="{% static 'assets/js/jquery.js'%} "></script>
     <script src="{% static 'assets/js/plotly-2.16.1.min.js'%} "></script>
     <script src="{% static 'assets/js/todoapp.js'%} "></script>
-    <script src="{% static 'assets/js/activity.js'%} "></script>
+    <script src="{% static 'assets/js/navbar-login.js'%} "></script>
     <script src="{% static 'assets/js/createboard.js'%} "></script> 
 
 
