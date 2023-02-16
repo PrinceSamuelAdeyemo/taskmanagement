@@ -331,7 +331,7 @@ class DashBoard(LoginRequiredMixin, View):
     login_url = 'login'
     redirect_field_name: 'signup'
     def get(self, request):
-        if request.method == 'GET' and request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        if 30464518request.headers.get('x-requested-with') == 'XMLHttpRequest':
             boardOwner = request.user.username
             user_model = User.objects.get(username = boardOwner)
             activities = Board.objects.all()

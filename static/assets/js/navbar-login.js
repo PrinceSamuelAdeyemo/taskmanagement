@@ -6,13 +6,14 @@ jQuery(function($){
             success: function(response){
                 if (response.user === 'is_not_authenticated'){
                     console.log('Not logged in');
-                    window.location.href = 'login.html';
+                    window.location.href = '/login';
                     
                     
                 }
                 else if (response.user === 'is_authenticated'){
-                    window.location.href = '/dashboard';
                     console.log('Logged in');
+                    window.location.href = '/dashboard';
+                    
                 }
                 else{
                     alert('Not receiving a valid response');
